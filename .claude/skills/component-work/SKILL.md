@@ -1,7 +1,7 @@
 ---
 name: component-work
-description: Creates, modifies, deletes UI components and their Storybook stories. Manages component taxonomy, design tokens, and interactive patterns for MUI-based design system.
-when_to_use: When user asks to create, modify, delete, or refactor components or stories. Trigger phrases include making new components, editing existing ones, adding stories, or working with the component taxonomy.
+description: ALWAYS invoke this skill when files under src/components/ are created, modified, or deleted. Do not edit component files directly — use this skill first. Also trigger for any story file (.stories.jsx) work. Manages component taxonomy, design tokens, and interactive patterns for MUI-based design system.
+when_to_use: ALWAYS invoke this skill when files under src/components/ are created, modified, deleted, or refactored. Do not edit component or story files directly — use this skill first. Also trigger when user mentions making, editing, removing components or stories.
 ---
 
 # Component Work Skill

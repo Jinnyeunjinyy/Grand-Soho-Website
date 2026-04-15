@@ -5,7 +5,7 @@
  * 직접 수정하지 마세요. 수정이 필요하면 스크립트를 수정하세요.
  *
  * 생성: pnpm generate-rules
- * 생성일: 2026-04-14
+ * 생성일: 2026-04-15
  */
 
 export const priorityMeta = {
@@ -131,6 +131,20 @@ export const ruleNodes = [
     "description": "> 외부 코드 분석 시 감지해야 할 항목과 변환 규칙"
   },
   {
+    "id": "project-planning",
+    "name": "project-planning (Skill)",
+    "priority": "Skill",
+    "path": ".claude/skills/project-planning/SKILL.md",
+    "description": "Creates structured planning documents (project-summary, ux-flow, visual-direction) in docs/ for new feature or project initiatives."
+  },
+  {
+    "id": "project-planning--doc-templates",
+    "name": "doc-templates.md",
+    "priority": "Skill Resource",
+    "path": ".claude/skills/project-planning/resources/doc-templates.md",
+    "description": "> 각 Phase에서 문서 작성 시 이 템플릿의 구조를 따른다."
+  },
+  {
     "id": "rule-visualization",
     "name": "rule-visualization (Skill)",
     "priority": "Skill",
@@ -231,6 +245,18 @@ export const ruleEdges = [
   {
     "from": "convert-external",
     "to": "convert-external--conversion-checklist",
+    "type": "resources",
+    "note": ""
+  },
+  {
+    "from": "claude-md",
+    "to": "project-planning",
+    "type": "activates",
+    "note": ""
+  },
+  {
+    "from": "project-planning",
+    "to": "project-planning--doc-templates",
     "type": "resources",
     "note": ""
   },
