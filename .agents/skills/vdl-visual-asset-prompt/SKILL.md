@@ -1,6 +1,6 @@
 ---
 name: vdl-visual-asset-prompt
-description: Use in the Vibe Design Lab repo when turning vague visual intent into a restrained generation-ready prompt spec for images, illustrations, heroes, thumbnails, diagrams, 3D objects, abstract backgrounds, icons, menu illustration series, or "/visual-asset" style requests. Start from the canonical Claude visual-asset-prompt source, lock an Asset Template first, FORMAT as ratio, composition, background, object scale, crop, margins, and asset type, then choose 1 to 2 LOOK keywords, and keep SUBJECT as the only variable for series. Inspect available generators, preserve user constraints, run the deterministic derive engine for negatives, and route to the appropriate VDL generation or implementation skill. Do not directly generate images from this skill.
+description: Use in the Vibe Design Lab repo when turning vague visual intent into a restrained generation-ready prompt spec for images, illustrations, heroes, thumbnails, diagrams, 3D objects, abstract backgrounds, icons, menu illustration series, or "/visual-asset" style requests. Start from the canonical Claude visual-asset-prompt source, lock an Asset Template first, FORMAT as ratio, composition, background, object scale, crop, margins, and asset type, then choose 1 to 2 LOOK keywords, and keep SUBJECT as the only variable for series. Target the Codex built-in image model (gpt-image 2.0 / latest), preserve user constraints, run independent steps in parallel, run the deterministic derive engine for negatives, and route to the appropriate VDL generation or implementation skill. Do not directly generate images mid-spec from this skill.
 ---
 
 # VDL Visual Asset Prompt
@@ -19,10 +19,12 @@ SUBJECT the only variable in a series
 
 Order matters. Lock FORMAT first because it controls whether the image is usable in the product surface. Dial LOOK second. Change SUBJECT last. For a series, freeze FORMAT and LOOK, create or choose a master only after the first seed image, then iterate SUBJECT with the same template and reference strategy. If the user asks for a fair test or a fresh run, do not use previous generated images as references.
 
+Run independent work in parallel. Whenever steps do not depend on each other's results, batch them in one turn instead of serially: read the required reference files together, and after a series master is accepted, generate the remaining SUBJECT variations in parallel under the frozen template and reference. Keep only genuinely ordered steps serial: master before its derivatives, and a derive rerun after a keyword change.
+
 ## Required Reads
 
 - Read `.claude/skills/visual-asset-prompt/SKILL.md` for the full source workflow.
-- Read `.claude/skills/visual-asset-prompt/references/model-profiles.md` before writing the final positive prompt.
+- Read `.claude/skills/visual-asset-prompt/references/model-profiles.md` before writing the final positive prompt. Use Profile B (GPT image) only. Ignore Profile A (Nano Banana); this Codex skill does not target Nano Banana.
 - Read `.claude/skills/visual-asset-prompt/references/index.md` before choosing taxonomy keywords.
 - Read `.claude/skills/visual-asset-prompt/references/intent-frame.md` when mapping vague intent into the 7-axis frame.
 - Read `.claude/skills/visual-asset-prompt/references/validation-rules.md` when keyword count, style count, or conflicts are unclear.
@@ -32,13 +34,7 @@ If the Claude source folder is missing, stop and tell the user this Codex skill 
 
 ## Workflow
 
-1. Detect the target generator before drafting the prompt:
-
-```bash
-node .claude/skills/visual-asset-prompt/scripts/detect-env.mjs
-```
-
-Use `recommendedTarget` when only one generator is available. If both Nano Banana and GPT image are available, choose by intent: GPT for precise text, structure, or identity preservation; Nano Banana for fast visual exploration, scenes, and multi-turn edits. Ask once if the choice is ambiguous. If none are available, still write an external-tool prompt spec and do not generate.
+1. Target the Codex built-in image generator. This skill always targets the Codex built-in image model (gpt-image 2.0, or the latest image model available in this Codex environment). Do not target Nano Banana and do not depend on the `detect-env.mjs` generator scan, `GEMINI_API_KEY`, or the `nano-gen.mjs` runner. There is no generator choice to make here; write every prompt in the GPT image profile (Profile B). If the user explicitly names a different external tool, write an external-tool prompt spec for it and do not generate.
 
 2. Clarify only what is missing. Ask at most two questions, focused on:
 
@@ -75,25 +71,24 @@ node .claude/skills/visual-asset-prompt/scripts/derive.mjs '["Risograph"]' "arti
 
 Use the returned `negative` as the source of truth for exclusions. Treat `violations` as required review input: reduce or replace keywords, then rerun the command until the spec is coherent. Do not manually calculate incompatibility sets.
 
-8. Write the positive prompt in the target model profile:
+8. Write the positive prompt in the GPT image profile (Profile B):
 
-- Nano Banana: one natural scene narrative, usually one sentence or a short paragraph. For aesthetic illustration prompts, prefer 25 to 50 words and avoid over-specification.
-- GPT image: use the 5-slot structure: scene or background, subject, key details, use case, constraints. Include the constraints slot.
-- Both: use concrete visual facts, not praise words. Do not output a comma-separated keyword stack. Avoid terms such as stunning, epic, masterpiece, 8k, ultra-detailed, or trending.
+- Use the 5-slot structure: scene or background, subject, key details, use case, constraints. Always include the constraints slot, since the model fills it arbitrarily when omitted.
+- GPT image reads the prompt literally, so detail is fine, but fill it with concrete visual facts, not praise words. Do not output a comma-separated keyword stack. Avoid terms such as stunning, epic, masterpiece, 8k, ultra-detailed, or trending.
 - Include the purpose and product surface, such as "for a course card thumbnail" or "for a SaaS dark-mode feature tile".
-- For no-margin or thumbnail requests, state full bleed and no internal white border in the positive prompt, then add frame, border, poster margin, white mat, and large empty padding to the exclusions.
+- For no-margin or thumbnail requests, state full bleed and no internal white border in the positive prompt, then add frame, border, poster margin, white mat, and large empty padding to the constraints slot.
 
 9. For series, freeze FORMAT and LOOK, then vary SUBJECT only. Use references only after the first newly generated master is accepted, unless the user asks for a fair no-reference test.
 
-10. Route the result instead of generating directly:
+10. Route the result instead of generating mid-spec:
 
-- Raster image prompt: `vdl-nano-banana`
+- Raster image: the Codex built-in image generator (gpt-image 2.0 / latest). Generate here once the spec is approved; do not route raster to Nano Banana.
 - Isometric SVG: `vdl-isometric-illustration`
 - Bitmap to isometric SVG: `vdl-bitmap-to-iso`
 - Presentation illustration: `vdl-presentation-illustration`
 - Open Graph image: `vdl-og-optimized` or `vdl-og-brand`
 
-If the user then asks to generate the image, invoke the routed skill and follow its approval and API key rules.
+If the user then asks to generate a raster image, call the Codex built-in image generator with the final prompt. For the SVG and Open Graph routes, invoke the listed skill and follow its approval rules. When generating a series, run the independent SUBJECT variations in parallel.
 
 ## Output Format
 
@@ -118,7 +113,7 @@ Only the filled axes.
 Mark the main style and each keyword role. Add one restraint note about what was intentionally omitted.
 
 ## Final Prompt
-The positive prompt written for the selected target model.
+The positive prompt written in the GPT image profile (5-slot).
 
 ## Negative Prompt
 The derive engine's negative list, shortened only when the target profile requires concise inline constraints.
