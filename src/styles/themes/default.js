@@ -1,36 +1,60 @@
 /**
- * Default Theme
+ * Grand Soho Theme
  *
- * 프로젝트의 기본 디자인 토큰을 정의하는 표준 테마입니다.
- * 피그마의 Design Tokens / Variables와 동일한 역할입니다.
+ * Grand Soho 브랜드 디자인 토큰.
+ * Visual Direction: docs/grand-soho/03-visual-direction.md
  *
  * ## 핵심 철학
- * - **Sharp Corners**: borderRadius 0 (날카로운 모서리)
- * - **Dimmed Shadow**: offset 없이 blur만 사용하는 은은한 그림자
- * - **Pure White**: 깔끔한 흰색 배경
- * - **Brand Blue**: Primary 색상 #0000FF
+ * - **Warm Brown**: 브라운 계열 Primary (#463335)
+ * - **3-Tone Rhythm**: 딥다크 / 크림베이지 / 웜화이트 섹션 배경 교차
+ * - **Editorial Typography**: Cormorant Garamond (h1·h2) + Pretendard (나머지)
+ * - **Sharp Corners**: borderRadius 0
  */
 
 import { createTheme } from '@mui/material/styles';
-import { blueGrey, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 
 // ============================================================
 // 1. Color Tokens (색상 토큰)
 // ============================================================
+
+/** 브랜드 브라운 원시값 — 투명도 계산에 재사용 */
+const BROWN = {
+  r: 44,
+  g: 31,
+  b: 32,
+};
+const brownAlpha = (a) => `rgba(${BROWN.r},${BROWN.g},${BROWN.b},${a})`;
+
+/** 브랜드 Primary 원시값 (포화 브라운) */
+const PRIMARY = { r: 70, g: 51, b: 53 };
+const primaryAlpha = (a) => `rgba(${PRIMARY.r},${PRIMARY.g},${PRIMARY.b},${a})`;
+
 const palette = {
   mode: 'light',
-  // 브랜드 색상
+
+  // 브랜드 색상 — 딥 브라운레드 계열
   primary: {
-    light: '#6666FF',
-    main: '#0000FF',
-    dark: '#0000B2',
-    contrastText: '#FFFFFF',
+    light: '#6B4E51',
+    main: '#463335',
+    dark: '#2C1F20',
+    contrastText: '#FAF8F5',
   },
+
+  // 다크 섹션 (Hero, Footer, Gallery 배경)
   secondary: {
-    light: blueGrey[700],
-    main: blueGrey[900],
-    dark: '#1a252b',
-    contrastText: '#FFFFFF',
+    light: '#463335',
+    main: '#2C1F20',
+    dark: '#1A1213',
+    contrastText: '#FAF8F5',
+  },
+
+  // Accent — 골든 탄
+  accent: {
+    main: '#C4956A',
+    light: '#DDBFA0',
+    dark: '#A87548',
+    contrastText: '#FAF8F5',
   },
 
   // 상태 색상 (Feedback)
@@ -59,30 +83,33 @@ const palette = {
     contrastText: '#FFFFFF',
   },
 
-  // 텍스트 색상
+  // 텍스트 색상 — 브라운 틴트
   text: {
-    primary: 'rgba(0, 0, 0, 0.87)',
-    secondary: 'rgba(0, 0, 0, 0.6)',
-    disabled: 'rgba(0, 0, 0, 0.38)',
+    primary: brownAlpha(0.87),
+    secondary: brownAlpha(0.55),
+    disabled: brownAlpha(0.35),
+    inverse: '#FAF8F5',
   },
 
   // 배경 색상
   background: {
-    default: '#FFFFFF',
-    paper: '#FFFFFF',
+    default: '#FAF8F5',   // 웜 화이트 — 페이지 기본 배경
+    paper: '#FFFFFF',     // 카드·GNB·폼 배경
+    subtle: '#EDE8DF',    // 크림 베이지 섹션 배경
+    dark: '#2C1F20',      // 딥 다크 섹션 배경
   },
 
   // 구분선
-  divider: 'rgba(0, 0, 0, 0.12)',
+  divider: primaryAlpha(0.12),
 
   // 액션 상태
   action: {
-    active: 'rgba(0, 0, 0, 0.54)',
-    hover: 'rgba(0, 0, 0, 0.04)',
-    selected: 'rgba(0, 0, 0, 0.08)',
-    disabled: 'rgba(0, 0, 0, 0.26)',
-    disabledBackground: 'rgba(0, 0, 0, 0.12)',
-    focus: 'rgba(0, 0, 0, 0.12)',
+    active: brownAlpha(0.54),
+    hover: primaryAlpha(0.04),
+    selected: primaryAlpha(0.08),
+    disabled: brownAlpha(0.26),
+    disabledBackground: brownAlpha(0.12),
+    focus: primaryAlpha(0.12),
   },
 
   // Grey 스케일
@@ -103,127 +130,111 @@ const palette = {
 // ============================================================
 // 2. Typography Tokens (타이포그래피 토큰)
 // ============================================================
+const SERIF = '"Cormorant Garamond", Georgia, serif';
+const SANS = '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
+
 const typography = {
-  // 기본 폰트 패밀리
-  fontFamily: [
-    '"Pretendard Variable"',
-    'Pretendard',
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'system-ui',
-    'Roboto',
-    '"Helvetica Neue"',
-    '"Segoe UI"',
-    '"Apple SD Gothic Neo"',
-    '"Noto Sans KR"',
-    '"Malgun Gothic"',
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"',
-    'sans-serif',
-  ].join(','),
+  // 기본 폰트 패밀리 (한글 본문)
+  fontFamily: SANS,
 
-  // 헤딩 폰트 패밀리
-  headingFontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
+  // 헤딩 폰트 패밀리 (영문 대제목 — Cormorant Garamond 우선)
+  headingFontFamily: `${SERIF}, ${SANS}`,
 
-  // 폰트 크기 기준
   fontSize: 14,
   htmlFontSize: 16,
 
-  // 폰트 굵기
   fontWeightLight: 300,
   fontWeightRegular: 400,
   fontWeightMedium: 500,
   fontWeightBold: 700,
 
-  // 헤딩 스타일
+  // 헤딩 — h1·h2: 에디토리얼 세리프, h3+: Pretendard
   h1: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
-    fontWeight: 900,
-    fontSize: '2.5rem',      // 40px
-    lineHeight: 1.2,
-    letterSpacing: '-0.02em',
+    fontFamily: SERIF,
+    fontWeight: 700,
+    fontStyle: 'italic',
+    fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+    lineHeight: 1.15,
+    letterSpacing: '-0.01em',
   },
   h2: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
-    fontWeight: 900,
-    fontSize: '2rem',        // 32px
+    fontFamily: SERIF,
+    fontWeight: 700,
+    fontSize: '2.5rem',
     lineHeight: 1.2,
-    letterSpacing: '-0.02em',
+    letterSpacing: '-0.01em',
   },
   h3: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
+    fontFamily: SANS,
     fontWeight: 800,
-    fontSize: '1.75rem',     // 28px
+    fontSize: '1.75rem',
     lineHeight: 1.3,
     letterSpacing: '-0.01em',
   },
   h4: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
+    fontFamily: SANS,
     fontWeight: 700,
-    fontSize: '1.5rem',      // 24px
+    fontSize: '1.5rem',
     lineHeight: 1.3,
     letterSpacing: '-0.01em',
   },
   h5: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
+    fontFamily: SANS,
     fontWeight: 700,
-    fontSize: '1.25rem',     // 20px
+    fontSize: '1.25rem',
     lineHeight: 1.4,
     letterSpacing: '0',
   },
   h6: {
-    fontFamily: '"Outfit", "Pretendard Variable", Pretendard, sans-serif',
+    fontFamily: SANS,
     fontWeight: 600,
-    fontSize: '1.125rem',    // 18px
+    fontSize: '1.125rem',
     lineHeight: 1.4,
     letterSpacing: '0',
   },
 
-  // 본문 스타일
+  // 본문
   body1: {
-    fontSize: '1rem',        // 16px
-    lineHeight: 1.6,
+    fontSize: '1rem',
+    lineHeight: 1.8,
     letterSpacing: '0',
   },
   body2: {
-    fontSize: '0.875rem',    // 14px
-    lineHeight: 1.6,
+    fontSize: '0.875rem',
+    lineHeight: 1.7,
     letterSpacing: '0',
   },
 
-  // 부제목
   subtitle1: {
-    fontSize: '1rem',        // 16px
+    fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.5,
     letterSpacing: '0.01em',
   },
   subtitle2: {
-    fontSize: '0.875rem',    // 14px
+    fontSize: '0.875rem',
     fontWeight: 500,
     lineHeight: 1.5,
     letterSpacing: '0.01em',
   },
 
-  // 기타
   button: {
-    fontSize: '0.875rem',    // 14px
+    fontSize: '0.875rem',
     fontWeight: 600,
     lineHeight: 1.75,
     letterSpacing: '0.02em',
-    textTransform: 'none',   // 대문자 변환 비활성화
+    textTransform: 'none',
   },
   caption: {
-    fontSize: '0.75rem',     // 12px
+    fontSize: '0.75rem',
     lineHeight: 1.5,
     letterSpacing: '0.02em',
   },
   overline: {
-    fontSize: '0.75rem',     // 12px
+    fontSize: '0.75rem',
     fontWeight: 600,
     lineHeight: 2,
-    letterSpacing: '0.08em',
+    letterSpacing: '0.14em',
     textTransform: 'uppercase',
   },
 };
@@ -231,24 +242,24 @@ const typography = {
 // ============================================================
 // 3. Spacing Token (간격 토큰)
 // ============================================================
-const spacing = 8; // 기본 단위: 8px
+const spacing = 8;
 
 // ============================================================
 // 4. Shape Token (모양 토큰)
 // ============================================================
 const shape = {
-  borderRadius: 0, // Sharp corners (0px)
+  borderRadius: 0,
 };
 
 // ============================================================
-// 5. Shadow Tokens (그림자 토큰)
+// 5. Shadow Tokens (그림자 토큰) — 브라운 틴트
 // ============================================================
 const customShadows = {
   none: 'none',
-  sm: '0 0 12px rgba(0, 0, 0, 0.06)',
-  md: '0 0 16px rgba(0, 0, 0, 0.08)',
-  lg: '0 0 20px rgba(0, 0, 0, 0.10)',
-  xl: '0 0 24px rgba(0, 0, 0, 0.12)',
+  sm: `0 0 12px ${brownAlpha(0.06)}`,
+  md: `0 0 16px ${brownAlpha(0.08)}`,
+  lg: `0 0 20px ${brownAlpha(0.10)}`,
+  xl: `0 0 24px ${brownAlpha(0.12)}`,
 };
 
 // ============================================================
@@ -256,11 +267,11 @@ const customShadows = {
 // ============================================================
 const breakpoints = {
   values: {
-    xs: 0,      // 모바일
-    sm: 600,    // 태블릿 세로
-    md: 900,    // 태블릿 가로
-    lg: 1200,   // 데스크톱
-    xl: 1536,   // 대형 데스크톱
+    xs: 0,
+    sm: 600,
+    md: 900,
+    lg: 1200,
+    xl: 1536,
   },
 };
 
@@ -307,6 +318,36 @@ const components = {
     styleOverrides: {
       body: {
         scrollbarWidth: 'thin',
+        backgroundColor: palette.background.default,
+      },
+    },
+  },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        borderRadius: '50px',
+        textTransform: 'none',
+      },
+    },
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        borderRadius: '50%',
+      },
+    },
+  },
+  MuiChip: {
+    styleOverrides: {
+      root: {
+        borderRadius: '50px',
+      },
+    },
+  },
+  MuiCard: {
+    styleOverrides: {
+      root: {
+        borderRadius: '16px',
       },
     },
   },
@@ -314,44 +355,13 @@ const components = {
     styleOverrides: {
       root: {
         boxShadow: customShadows.lg,
+        borderRadius: '16px',
       },
-      elevation0: {
-        boxShadow: customShadows.none,
-      },
-      elevation1: {
-        boxShadow: customShadows.sm,
-      },
-      elevation2: {
-        boxShadow: customShadows.md,
-      },
-      elevation3: {
-        boxShadow: customShadows.lg,
-      },
-      elevation4: {
-        boxShadow: customShadows.xl,
-      },
-    },
-  },
-  MuiButton: {
-    styleOverrides: {
-      root: {
-        borderRadius: 0,
-        textTransform: 'none',
-      },
-    },
-  },
-  MuiCard: {
-    styleOverrides: {
-      root: {
-        borderRadius: 0,
-      },
-    },
-  },
-  MuiChip: {
-    styleOverrides: {
-      root: {
-        borderRadius: 4,
-      },
+      elevation0: { boxShadow: customShadows.none },
+      elevation1: { boxShadow: customShadows.sm },
+      elevation2: { boxShadow: customShadows.md },
+      elevation3: { boxShadow: customShadows.lg },
+      elevation4: { boxShadow: customShadows.xl },
     },
   },
 };
@@ -370,11 +380,10 @@ const defaultTheme = createTheme({
   components,
 });
 
-// 커스텀 속성 추가 (타입 확장 없이 접근 가능하도록)
 defaultTheme.customShadows = customShadows;
 
 /**
- * 대시보드 스타일 설정 (Default)
+ * Grand Soho 대시보드 스타일 설정
  */
 defaultTheme.dashboard = {
   style: 'default',
@@ -382,43 +391,43 @@ defaultTheme.dashboard = {
   iconWeight: 400,
   cardBorderRadius: 0,
   cardColors: [
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
-    'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
+    'linear-gradient(to bottom, #FAF8F5 0%, #FAF8F5 100%)',
   ],
   subCardColors: [
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
-    'linear-gradient(to bottom, #FAFAFA 0%, #FAFAFA 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
+    'linear-gradient(to bottom, #EDE8DF 0%, #EDE8DF 100%)',
   ],
   textColor: palette.text.primary,
   textSecondary: palette.text.secondary,
   textShadow: '0 0 0 rgba(0, 0, 0, 0)',
   backdropFilter: 'blur(0px)',
   WebkitBackdropFilter: 'blur(0px)',
-  border: '1px solid transparent',
-  borderColor: 'transparent',
+  border: `1px solid ${primaryAlpha(0.12)}`,
+  borderColor: primaryAlpha(0.12),
   shadow: customShadows.lg,
-  subBorder: '1px solid rgba(0, 0, 0, 0.06)',
+  subBorder: `1px solid ${brownAlpha(0.06)}`,
   subShadow: '0 0 0 rgba(0, 0, 0, 0)',
   subBackdropFilter: 'blur(0px)',
   subBorderRadius: 0,
-  dividerColor: 'rgba(0, 0, 0, 0.12)',
+  dividerColor: primaryAlpha(0.12),
   progressHeight: 6,
-  progressTrackColor: 'rgba(0, 0, 0, 0.08)',
+  progressTrackColor: primaryAlpha(0.08),
   progressBarColor: palette.primary.main,
   progressGradient: false,
   progressBorderRadius: 0,
-  background: '#FFFFFF',
-  atmosphere: 'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
+  background: '#FAF8F5',
+  atmosphere: 'linear-gradient(to bottom, #FAF8F5 0%, #EDE8DF 100%)',
   atmosphereOpacity: 0,
-  accentColor: palette.primary.main,
+  accentColor: palette.accent.main,
   accentColors: {
     wind: '#4DB6AC',
     humidity: '#FFB74D',
@@ -430,7 +439,6 @@ defaultTheme.dashboard = {
 
 export default defaultTheme;
 
-// 개별 토큰 내보내기 (문서화용)
 export {
   palette,
   typography,

@@ -1,3 +1,11 @@
-export { MediaGridGallery } from './MediaGridGallery.jsx';
-export { UploadModal } from './UploadModal.jsx';
 export { FilterBar } from './FilterBar.jsx';
+export { default as HeroSection } from './home/HeroSection.jsx';
+export { default as FeatureSection } from './home/FeatureSection.jsx';
+export { default as PartnerProgramSection } from './home/PartnerProgramSection.jsx';
+export { default as GallerySection } from './home/GallerySection.jsx';
+export { default as LocationSection } from './home/LocationSection.jsx';
+export { default as HomePage } from './home/HomePage.jsx';
+export { default as SpacesPage } from './spaces/SpacesPage.jsx';
+export { default as ContactPage } from './contact/ContactPage.jsx';
+export { default as NoticePage } from './notice/NoticePage.jsx';
+export { default as NoticeDetailPage } from './notice/NoticeDetailPage.jsx';
