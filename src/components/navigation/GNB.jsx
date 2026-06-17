@@ -28,7 +28,8 @@ export const useGNB = () => useContext(GNBContext);
  *
  * Props:
  * @param {node} logo - 로고 영역 (항상 표시) [Optional]
- * @param {node} navContent - 네비게이션 콘텐츠 (반응형 전환 대상) [Optional]
+ * @param {node} navContent - 네비게이션 콘텐츠 (데스크탑 헤더용) [Optional]
+ * @param {node} drawerNavContent - 모바일 드로어 전용 네비게이션 콘텐츠 [Optional, 기본값: navContent]
  * @param {node} persistent - 헤더에 항상 표시될 요소 [Optional]
  * @param {node} drawerHeader - 드로어 상단 커스텀 요소 [Optional]
  * @param {node} drawerFooter - 드로어 하단 커스텀 요소 [Optional]
@@ -51,6 +52,7 @@ export const useGNB = () => useContext(GNBContext);
 const GNB = forwardRef(function GNB({
   logo,
   navContent,
+  drawerNavContent,
   persistent,
   drawerHeader,
   drawerFooter,
@@ -105,8 +107,8 @@ const GNB = forwardRef(function GNB({
         </IconButton>
       </Box>
 
-      <Box sx={{ flex: 1, overflow: 'auto', py: 2, px: 2 }}>
-        {navContent}
+      <Box sx={{ flex: 1, overflow: 'auto', py: 2, px: 2 }} onClick={closeDrawer}>
+        {drawerNavContent ?? navContent}
       </Box>
 
       {drawerFooter && (

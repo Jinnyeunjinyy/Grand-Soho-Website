@@ -65,30 +65,51 @@ function PartnerProgramSection({ benefits = partnerBenefits, meta = partnerProgr
         </Typography>
       </Box>
 
-      {/* Packed Rounded Cards 그리드 */}
+      {/* 카드 목록 — 모바일: 수평 스크롤 캐러셀 / 데스크탑: 4컬럼 그리드 */}
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+          display: { xs: 'flex', md: 'grid' },
+          gridTemplateColumns: { md: 'repeat(4, 1fr)' },
+          flexDirection: 'row',
           gap: '6px',
+          mx: { xs: -4, sm: -6, md: 0 },
+          px: { xs: 4, sm: 6, md: 0 },
+          overflowX: { xs: 'auto', md: 'visible' },
+          scrollSnapType: { xs: 'x mandatory', md: 'none' },
+          scrollBehavior: 'smooth',
+          '&::-webkit-scrollbar': { display: 'none' },
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
       >
         {benefits.map((benefit, idx) => {
           const IconComponent = ICON_MAP[benefit.icon];
           return (
-            <FadeTransition key={benefit.id} direction="up" delay={idx * 80} isTriggerOnView>
-              <BenefitCard
-                icon={IconComponent ?? null}
-                tag={benefit.tag}
-                title={benefit.title}
-                description={benefit.description}
-                frequency={benefit.frequency}
-                partner={benefit.partner}
-                sx={{ height: '100%' }}
-              />
-            </FadeTransition>
+            <Box
+              key={benefit.id}
+              sx={{
+                flexShrink: { xs: 0, md: 1 },
+                width: { xs: '78%', sm: '55%', md: 'auto' },
+                scrollSnapAlign: { xs: 'start', md: 'none' },
+                display: 'flex',
+              }}
+            >
+              <FadeTransition direction="up" delay={idx * 80} isTriggerOnView sx={{ height: '100%', width: '100%' }}>
+                <BenefitCard
+                  icon={IconComponent ?? null}
+                  tag={benefit.tag}
+                  title={benefit.title}
+                  description={benefit.description}
+                  frequency={benefit.frequency}
+                  partner={benefit.partner}
+                  sx={{ height: '100%' }}
+                />
+              </FadeTransition>
+            </Box>
           );
         })}
+        {/* 마지막 카드 우측 여백 (모바일 전용) */}
+        <Box sx={{ display: { xs: 'block', md: 'none' }, flexShrink: 0, width: { xs: 16, sm: 24 } }} />
       </Box>
     </Box>
   );

@@ -96,6 +96,37 @@ function SiteShell({ children }) {
     </Box>
   );
 
+  const drawerNavContent = (
+    <Box component="nav" sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+      {NAV_MENU_ITEMS.map((item) => {
+        const isActive = item.id === activeId;
+        return (
+          <Box
+            key={item.id}
+            component="a"
+            href={item.href}
+            onClick={(e) => { e.preventDefault(); navigate(item.href); }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              px: 2,
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: isActive ? 600 : 400,
+              color: isActive ? 'primary.main' : 'text.primary',
+              textDecoration: 'none',
+              borderRadius: '8px',
+              transition: 'background-color 150ms',
+              '&:hover': { backgroundColor: 'action.hover' },
+            }}
+          >
+            {item.label}
+          </Box>
+        );
+      })}
+    </Box>
+  );
+
   const drawerFooter = (
     <Button
       variant="contained"
@@ -113,6 +144,7 @@ function SiteShell({ children }) {
     <AppShell
       logo={logo}
       headerCollapsible={navContent}
+      drawerNavContent={drawerNavContent}
       drawerFooter={drawerFooter}
       breakpoint="md"
       headerHeight={64}

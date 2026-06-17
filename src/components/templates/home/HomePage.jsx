@@ -8,7 +8,7 @@ const HERO_IMAGE = '/images/exterior.jpeg';
 
 const GALLERY_IMAGES = [
   { src: '/images/lounge-01.jpeg',       alt: '라운지 공간' },
-  { src: '/images/office-101-01.jpeg',   alt: '개인 업무 공간' },
+  { src: '/images/lounge-08.jpeg',        alt: '라운지 공간' },
   { src: '/images/meeting-ut-01.jpeg',   alt: '미팅룸' },
   { src: '/images/lounge-02.jpeg',       alt: '커뮤니티 라운지' },
 ];

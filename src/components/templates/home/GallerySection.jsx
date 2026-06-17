@@ -132,18 +132,18 @@ function GallerySection({ images = [], sx }) {
             sx={{
               gridColumn: { xs: '1', md: '2' },
               gridRow: { xs: 'auto', md: '1' },
-              minHeight: { xs: 200, md: 'unset' },
+              aspectRatio: { xs: '1 / 1', md: 'unset' },
             }}
           >
             {renderImage(images[0], 0)}
           </Box>
 
-          {/* img[1] — col3 row1-2 (tall, desktop) */}
+          {/* img[1] — col3 row1-2 (tall, desktop) / 1칸 (mobile) */}
           <Box
             sx={{
               gridColumn: { xs: '2', md: '3' },
-              gridRow: { xs: 'span 2', md: '1 / 3' },
-              minHeight: { xs: 280, md: 'unset' },
+              gridRow: { xs: 'auto', md: '1 / 3' },
+              aspectRatio: { xs: '1 / 1', md: 'unset' },
             }}
           >
             {renderImage(images[1], 1)}
@@ -154,7 +154,7 @@ function GallerySection({ images = [], sx }) {
             sx={{
               gridColumn: { xs: '1', md: '1' },
               gridRow: { xs: 'auto', md: '2' },
-              minHeight: { xs: 200, md: 'unset' },
+              aspectRatio: { xs: '1 / 1', md: 'unset' },
             }}
           >
             {renderImage(images[2], 2)}
@@ -165,7 +165,7 @@ function GallerySection({ images = [], sx }) {
             sx={{
               gridColumn: { xs: '2', md: '2' },
               gridRow: { xs: 'auto', md: '2' },
-              minHeight: { xs: 200, md: 'unset' },
+              aspectRatio: { xs: '1 / 1', md: 'unset' },
             }}
           >
             {renderImage(images[3], 3)}

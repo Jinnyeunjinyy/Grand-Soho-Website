@@ -11,7 +11,8 @@ import { GNB } from '../navigation/GNB';
  * Props:
  * @param {node} logo - 로고 영역 (항상 표시) [Optional]
  * @param {node} headerPersistent - 헤더에 항상 표시될 요소 [Optional]
- * @param {node} headerCollapsible - 모바일에서 드로어로 이동할 요소 [Optional]
+ * @param {node} headerCollapsible - 데스크탑 헤더에 표시될 요소 [Optional]
+ * @param {node} drawerNavContent - 모바일 드로어 전용 네비게이션 콘텐츠 [Optional]
  * @param {node} drawerHeader - 드로어 상단 커스텀 요소 [Optional]
  * @param {node} drawerFooter - 드로어 하단 커스텀 요소 [Optional]
  * @param {node} children - 메인 콘텐츠 영역 [Required]
@@ -38,6 +39,7 @@ const AppShell = forwardRef(function AppShell({
   logo,
   headerPersistent,
   headerCollapsible,
+  drawerNavContent,
   drawerHeader,
   drawerFooter,
   children,
@@ -66,6 +68,7 @@ const AppShell = forwardRef(function AppShell({
       <GNB
         logo={logo}
         navContent={headerCollapsible}
+        drawerNavContent={drawerNavContent}
         persistent={headerPersistent}
         drawerHeader={drawerHeader}
         drawerFooter={drawerFooter}
