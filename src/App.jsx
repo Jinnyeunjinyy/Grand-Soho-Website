@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { defaultTheme as theme } from './styles/themes';
 import SiteShell from './components/templates/SiteShell';
 import HomePage from './components/templates/home/HomePage';
-import SpacesPage from './components/templates/spaces/SpacesPage';
+import SpacesCardPage from './components/templates/spaces/SpacesCardPage';
 import ContactPage from './components/templates/contact/ContactPage';
 import NoticePage from './components/templates/notice/NoticePage';
 import NoticeDetailPage from './components/templates/notice/NoticeDetailPage';
@@ -37,7 +37,7 @@ function App() {
         <SiteShell>
           <Routes>
             <Route index element={<HomePage />} />
-            <Route path="/spaces" element={<SpacesPage reservationUrl={navCta.path} />} />
+            <Route path="/spaces" element={<SpacesCardPage reservationUrl={navCta.path} />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/notice" element={<NoticeListRoute />} />
             <Route path="/notice/:id" element={<NoticeDetailRoute />} />
