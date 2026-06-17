@@ -50,17 +50,16 @@ function NoticePage({ onNoticeClick, sx }) {
         sx={{
           py: { xs: 8, md: 12 },
           px: { xs: 3, sm: 5, md: 10, lg: 14 },
-          backgroundColor: 'secondary.main',
-          color: 'secondary.contrastText',
+          backgroundColor: 'background.default',
         }}
       >
         <Typography
           variant="overline"
-          sx={{ color: 'primary.light', letterSpacing: '0.12em', display: 'block', mb: 1 }}
+          sx={{ color: 'accent.main', letterSpacing: '0.14em', display: 'block', mb: 1 }}
         >
           Notice
         </Typography>
-        <Typography variant="h2" sx={{ fontWeight: 900 }}>
+        <Typography variant="h2" sx={{ fontWeight: 700 }}>
           공지사항
         </Typography>
       </Box>
@@ -90,8 +89,8 @@ function NoticePage({ onNoticeClick, sx }) {
                 sx={{
                   width: '100%',
                   border: 'none',
-                  background: notice.isPinned ? 'grey.50' : 'transparent',
-                  backgroundColor: notice.isPinned ? 'grey.50' : 'transparent',
+                  background: 'transparent',
+                  backgroundColor: notice.isPinned ? 'background.subtle' : 'transparent',
                   textAlign: 'left',
                   cursor: onNoticeClick ? 'pointer' : 'default',
                   display: 'flex',
@@ -102,7 +101,7 @@ function NoticePage({ onNoticeClick, sx }) {
                   py: 3,
                   px: 0,
                   transition: 'background-color 150ms',
-                  '&:hover': onNoticeClick ? { backgroundColor: 'grey.50' } : {},
+                  '&:hover': onNoticeClick ? { backgroundColor: 'action.hover' } : {},
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flex: 1, minWidth: 0 }}>
@@ -117,7 +116,7 @@ function NoticePage({ onNoticeClick, sx }) {
                         label={CATEGORY_LABEL[notice.category] ?? notice.category}
                         size="small"
                         color={CATEGORY_COLOR[notice.category] ?? 'default'}
-                        sx={{ borderRadius: 0, fontSize: '0.6875rem', height: 20 }}
+                        sx={{ fontSize: '0.6875rem', height: 20 }}
                       />
                     </Box>
                     <Typography

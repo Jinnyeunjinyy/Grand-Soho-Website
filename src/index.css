@@ -1,3 +1,40 @@
+/* NEXON Lv2 Gothic */
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('/fonts/OTF/NEXON Lv2 Gothic OTF Light.otf') format('opentype'),
+       url('/fonts/TTF/NEXON Lv2 Gothic Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('/fonts/OTF/NEXON Lv2 Gothic OTF.otf') format('opentype'),
+       url('/fonts/TTF/NEXON Lv2 Gothic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('/fonts/OTF/NEXON Lv2 Gothic OTF Medium.otf') format('opentype'),
+       url('/fonts/TTF/NEXON Lv2 Gothic Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('/fonts/OTF/NEXON Lv2 Gothic OTF Bold.otf') format('opentype'),
+       url('/fonts/TTF/NEXON Lv2 Gothic Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {

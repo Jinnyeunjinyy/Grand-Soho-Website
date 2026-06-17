@@ -38,13 +38,14 @@ export const useGNB = () => useContext(GNBContext);
  * @param {boolean} hasBorder - 헤더 하단 보더 [Optional, 기본값: true]
  * @param {boolean} isSticky - 헤더 고정 [Optional, 기본값: true]
  * @param {boolean} isTransparent - 헤더 투명 배경 [Optional, 기본값: false]
+ * @param {boolean} isFloating - 글라스모피즘 floating pill 스타일 [Optional, 기본값: false]
  * @param {object} sx - 추가 스타일 [Optional]
  *
  * Example usage:
  * <GNB
  *   logo={<Logo />}
  *   navContent={<NavMenu items={menuItems} />}
- *   persistent={<SearchBar />}
+ *   isFloating
  * />
  */
 const GNB = forwardRef(function GNB({
@@ -59,6 +60,7 @@ const GNB = forwardRef(function GNB({
   hasBorder = true,
   isSticky = true,
   isTransparent = false,
+  isFloating = false,
   sx,
   ...props
 }, ref) {
@@ -69,9 +71,7 @@ const GNB = forwardRef(function GNB({
   const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
   const closeDrawer = () => setIsDrawerOpen(false);
 
-  /**
-   * 헤더 스타일
-   */
+  /* ── 기본 헤더 스타일 (isFloating: false) ── */
   const headerStyles = {
     position: isSticky ? 'sticky' : 'relative',
     top: 0,
@@ -81,120 +81,95 @@ const GNB = forwardRef(function GNB({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height,
-    px: { xs: 2, sm: 3, md: 4 },
-    backgroundColor: isTransparent ? 'transparent' : 'background.paper',
-    borderBottom: hasBorder ? '1px solid' : 'none',
+    height: isFloating ? height + 20 : height,
+    px: isFloating ? { xs: 2, sm: 3, md: 4 } : { xs: 2, sm: 3, md: 4 },
+    backgroundColor: isFloating ? 'transparent' : (isTransparent ? 'transparent' : 'background.default'),
+    borderBottom: isFloating ? 'none' : (hasBorder ? '1px solid' : 'none'),
     borderColor: 'divider',
-    backdropFilter: isTransparent ? 'blur(12px)' : 'none',
+    backdropFilter: isTransparent && !isFloating ? 'blur(12px)' : 'none',
     ...sx,
   };
 
-  /**
-   * 드로어 콘텐츠
-   */
+  /* ── 드로어 콘텐츠 ── */
   const renderDrawerContent = () => (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        width: drawerWidth,
-      }}
-    >
-      {/* Drawer Header */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: drawerWidth }}>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height,
-          px: 2,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          height, px: 2, borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0,
         }}
       >
         {drawerHeader || logo}
-        <IconButton
-          onClick={closeDrawer}
-          size="small"
-          aria-label="Close menu"
-        >
+        <IconButton onClick={closeDrawer} size="small" aria-label="Close menu">
           <CloseIcon />
         </IconButton>
       </Box>
 
-      {/* Drawer Content */}
-      <Box
-        sx={{
-          flex: 1,
-          overflow: 'auto',
-          py: 2,
-          px: 2,
-        }}
-      >
+      <Box sx={{ flex: 1, overflow: 'auto', py: 2, px: 2 }}>
         {navContent}
       </Box>
 
-      {/* Drawer Footer */}
       {drawerFooter && (
-        <Box
-          sx={{
-            p: 2,
-            borderTop: '1px solid',
-            borderColor: 'divider',
-            flexShrink: 0,
-          }}
-        >
+        <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
           {drawerFooter}
         </Box>
       )}
     </Box>
   );
 
+  /* ── 내비게이션 우측 영역 ── */
+  const renderNavRight = () => (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {persistent}
+      {!isMobile && navContent}
+      {isMobile && navContent && (
+        <IconButton onClick={toggleDrawer} size="medium" aria-label="Open menu" aria-expanded={isDrawerOpen}>
+          <MenuIcon />
+        </IconButton>
+      )}
+    </Box>
+  );
+
   return (
     <GNBContext.Provider value={{ isDrawerOpen, toggleDrawer, closeDrawer, isMobile }}>
-      {/* Header */}
       <Box ref={ref} component="header" sx={headerStyles} {...props}>
-        {/* Left: Logo */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {logo}
-        </Box>
 
-        {/* Right: Navigation */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Persistent (always visible) */}
-          {persistent}
+        {isFloating ? (
+          /* ── Floating 글라스모피즘 pill ── */
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              height,
+              px: { xs: 2, md: 3 },
+              backgroundColor: 'rgba(250,248,245,0.72)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              borderRadius: '50px',
+              border: '1px solid rgba(70,51,53,0.10)',
+              boxShadow: '0 8px 32px rgba(44,31,32,0.08), 0 1px 0 rgba(255,255,255,0.6) inset',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>{logo}</Box>
+            {renderNavRight()}
+          </Box>
+        ) : (
+          /* ── 기본 전체 폭 헤더 ── */
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>{logo}</Box>
+            {renderNavRight()}
+          </>
+        )}
 
-          {/* Desktop: Show navContent */}
-          {!isMobile && navContent}
-
-          {/* Mobile: Hamburger menu */}
-          {isMobile && navContent && (
-            <IconButton
-              onClick={toggleDrawer}
-              size="medium"
-              aria-label="Open menu"
-              aria-expanded={isDrawerOpen}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-        </Box>
       </Box>
 
-      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={isDrawerOpen}
         onClose={closeDrawer}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
+        sx={{ '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' } }}
       >
         {renderDrawerContent()}
       </Drawer>

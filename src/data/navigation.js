@@ -10,7 +10,7 @@ export const navItems = [
 
 export const navCta = {
   label: '예약하기',
-  path: 'https://booking.naver.com/booking/13/bizes',
+  path: 'https://naver.me/FqZhjQ0i',
   isExternal: true,
 };
 

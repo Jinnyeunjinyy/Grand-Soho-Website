@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import DirectionsSubwayIcon from '@mui/icons-material/DirectionsSubway';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { locationInfo, contactInfo } from '../../../data/contact';
 import { navCta } from '../../../data/navigation';
@@ -32,7 +33,7 @@ function LocationSection({ location = locationInfo, contact = contactInfo, sx })
       sx={{
         py: { xs: 10, md: 16 },
         px: { xs: 4, sm: 6, md: 10, lg: 14 },
-        backgroundColor: 'background.subtle',
+        backgroundColor: 'background.default',
         ...sx,
       }}
     >
@@ -83,15 +84,17 @@ function LocationSection({ location = locationInfo, contact = contactInfo, sx })
               <Typography variant="body1" sx={{ mt: 0.5, fontWeight: 500 }}>
                 {location.address}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                {location.addressDetail}
-              </Typography>
+              {location.addressDetail && (
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
+                  {location.addressDetail}
+                </Typography>
+              )}
             </Box>
 
-            {/* 교통 */}
+            {/* 찾아가는 길 */}
             <Box>
               <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.1em' }}>
-                교통
+                찾아가는 길
               </Typography>
               <Stack spacing={1} sx={{ mt: 1 }}>
                 {location.transit.map((t, idx) => (
@@ -108,26 +111,36 @@ function LocationSection({ location = locationInfo, contact = contactInfo, sx })
                     {location.parking}
                   </Typography>
                 </Box>
+                {location.directionsNote && (
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5, lineHeight: 1.6 }}>
+                    {location.directionsNote}
+                  </Typography>
+                )}
               </Stack>
             </Box>
 
-            {/* 운영시간 */}
+            {/* 운영시간 & 전화 */}
             <Box>
               <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.1em' }}>
                 운영시간
               </Typography>
-              <Stack spacing={0.5} sx={{ mt: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  <AccessTimeIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                  <Typography variant="body2">{contact.hours.weekday}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                  <Box sx={{ width: 18 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {contact.hours.weekend}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
+                <AccessTimeIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                <Typography variant="body2">{contact.hours.daily}</Typography>
+              </Box>
+              {contact.phone && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
+                  <LocalPhoneIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                  <Typography
+                    variant="body2"
+                    component="a"
+                    href={`tel:${contact.phone}`}
+                    sx={{ textDecoration: 'none', color: 'text.primary', '&:hover': { color: 'primary.main' } }}
+                  >
+                    {contact.phone}
                   </Typography>
                 </Box>
-              </Stack>
+              )}
             </Box>
 
             {/* CTA */}

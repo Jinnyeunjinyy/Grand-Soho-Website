@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
+import { CategoryTab } from './CategoryTab';
 
 export default {
   title: 'Component/6. In-page Navigation/Tabs',
@@ -279,6 +280,27 @@ export const Colors = {
             <Tab label="탭 3" />
           </Tabs>
         </Box>
+      </Box>
+    );
+  },
+};
+
+/** Button Brand 탭 (CategoryTab) */
+export const ButtonBrand = {
+  render: () => {
+    const [selected, setSelected] = useState('all');
+    const tabs = [
+      { id: 'all', label: '전체' },
+      { id: 'private', label: '개인실' },
+      { id: 'meeting', label: '회의실' },
+      { id: 'lounge', label: '라운지', badge: 2 },
+    ];
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <CategoryTab categories={tabs} selected={selected} onChange={setSelected} />
+        <Typography variant="body2" color="text.secondary">
+          선택된 탭: <strong>{tabs.find((t) => t.id === selected)?.label}</strong>
+        </Typography>
       </Box>
     );
   },

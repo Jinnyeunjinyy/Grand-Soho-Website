@@ -7,3 +7,6 @@ export { MoodboardCard } from './MoodboardCard.jsx';
 
 // Style variant wrapper
 export { CardContainer } from './CardContainer.jsx';
+
+// Packed Rounded Cards 스타일
+export { BenefitCard } from './BenefitCard.jsx';

@@ -50,7 +50,7 @@ function GallerySection({ images = [], sx }) {
         height: '100%',
         overflow: 'hidden',
         cursor: 'pointer',
-        borderRadius: '12px',
+        borderRadius: '20px',
         backgroundColor: 'secondary.light',
         '&:hover img': { transform: 'scale(1.05)' },
         '& img': { transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)' },
@@ -80,7 +80,7 @@ function GallerySection({ images = [], sx }) {
       sx={{
         py: { xs: 10, md: 16 },
         px: { xs: 4, sm: 6, md: 10, lg: 14 },
-        backgroundColor: 'secondary.main',
+        backgroundColor: 'background.default',
         ...sx,
       }}
     >
@@ -97,7 +97,7 @@ function GallerySection({ images = [], sx }) {
               xs: 'auto',
               md: '280px 280px',
             },
-            gap: { xs: 1.5, md: 2 },
+            gap: '4px',
           }}
         >
           {/* 타이틀 카드 — col1 row1 */}
@@ -105,7 +105,7 @@ function GallerySection({ images = [], sx }) {
             sx={{
               gridColumn: { xs: '1 / 3', md: '1' },
               gridRow: { xs: 'auto', md: '1' },
-              borderRadius: '12px',
+              borderRadius: '20px',
               backgroundColor: 'secondary.dark',
               display: 'flex',
               flexDirection: 'column',
@@ -181,7 +181,7 @@ function GallerySection({ images = [], sx }) {
             >
               갤러리
             </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 800, color: 'secondary.contrastText' }}>
+            <Typography variant="h3" sx={{ fontWeight: 800 }}>
               공간을 직접 보세요
             </Typography>
           </Box>
@@ -189,14 +189,14 @@ function GallerySection({ images = [], sx }) {
             sx={{
               height: 320,
               border: '1px solid',
-              borderColor: 'rgba(250,248,245,0.12)',
-              borderRadius: '12px',
+              borderColor: 'divider',
+              borderRadius: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Typography variant="body2" sx={{ color: 'rgba(250,248,245,0.35)' }}>
+            <Typography variant="body2" color="text.disabled">
               공간 사진이 준비 중입니다.
             </Typography>
           </Box>

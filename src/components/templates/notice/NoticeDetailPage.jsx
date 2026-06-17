@@ -62,8 +62,7 @@ function NoticeDetailPage({ notice, onBack, onNavigate, sx }) {
         sx={{
           py: { xs: 8, md: 10 },
           px: { xs: 3, sm: 5, md: 10, lg: 14 },
-          backgroundColor: 'secondary.main',
-          color: 'secondary.contrastText',
+          backgroundColor: 'background.default',
         }}
       >
         {onBack && (
@@ -71,10 +70,10 @@ function NoticeDetailPage({ notice, onBack, onNavigate, sx }) {
             startIcon={<ArrowBackIcon />}
             onClick={onBack}
             sx={{
-              color: 'rgba(255,255,255,0.7)',
+              color: 'text.secondary',
               mb: 3,
               px: 0,
-              '&:hover': { color: 'white', backgroundColor: 'transparent' },
+              '&:hover': { color: 'primary.main', backgroundColor: 'transparent' },
             }}
           >
             목록으로
@@ -86,14 +85,14 @@ function NoticeDetailPage({ notice, onBack, onNavigate, sx }) {
             label={CATEGORY_LABEL[notice.category] ?? notice.category}
             size="small"
             color={CATEGORY_COLOR[notice.category] ?? 'default'}
-            sx={{ borderRadius: 0, fontSize: '0.6875rem', height: 20 }}
+            sx={{ fontSize: '0.6875rem', height: 20 }}
           />
-          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+          <Typography variant="caption" color="text.secondary">
             {notice.date}
           </Typography>
         </Box>
 
-        <Typography variant="h3" sx={{ fontWeight: 800, color: 'inherit' }}>
+        <Typography variant="h3" sx={{ fontWeight: 700 }}>
           {notice.title}
         </Typography>
       </Box>

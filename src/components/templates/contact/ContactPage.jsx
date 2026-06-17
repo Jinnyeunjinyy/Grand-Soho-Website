@@ -13,6 +13,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import { inquiryTypes, contactInfo } from '../../../data/contact';
 
 const INITIAL_FORM = {
@@ -72,20 +73,19 @@ function ContactPage({ onSubmit, sx }) {
         sx={{
           py: { xs: 8, md: 12 },
           px: { xs: 3, sm: 5, md: 10, lg: 14 },
-          backgroundColor: 'secondary.main',
-          color: 'secondary.contrastText',
+          backgroundColor: 'background.default',
         }}
       >
         <Typography
           variant="overline"
-          sx={{ color: 'primary.light', letterSpacing: '0.12em', display: 'block', mb: 1 }}
+          sx={{ color: 'accent.main', letterSpacing: '0.14em', display: 'block', mb: 1 }}
         >
           Contact
         </Typography>
-        <Typography variant="h2" sx={{ fontWeight: 900, mb: 2 }}>
+        <Typography variant="h2" sx={{ fontWeight: 700, mb: 2 }}>
           문의하기
         </Typography>
-        <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.72)', maxWidth: 480 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 480 }}>
           입주 상담부터 회의실 예약까지. 편하게 남겨 주시면 빠르게 답변드립니다.
         </Typography>
       </Box>
@@ -178,14 +178,20 @@ function ContactPage({ onSubmit, sx }) {
                     <EmailIcon sx={{ fontSize: 18, color: 'primary.main' }} />
                     <Typography variant="body2">{contactInfo.email}</Typography>
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                    <AccessTimeIcon sx={{ fontSize: 18, color: 'primary.main', mt: '2px' }} />
-                    <Box>
-                      <Typography variant="body2">{contactInfo.hours.weekday}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {contactInfo.hours.weekend}
-                      </Typography>
-                    </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <LocalPhoneIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography
+                      variant="body2"
+                      component="a"
+                      href={`tel:${contactInfo.phone}`}
+                      sx={{ textDecoration: 'none', color: 'text.primary', '&:hover': { color: 'primary.main' } }}
+                    >
+                      {contactInfo.phone}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <AccessTimeIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                    <Typography variant="body2">{contactInfo.hours.daily}</Typography>
                   </Box>
                 </Stack>
               </Box>

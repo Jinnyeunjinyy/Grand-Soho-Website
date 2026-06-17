@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { AppShell } from '../layout/AppShell';
 import { navItems, navCta, siteMeta } from '../../data/navigation';
@@ -39,24 +38,23 @@ function SiteShell({ children }) {
       onClick={(e) => { e.preventDefault(); navigate('/'); }}
       sx={{
         textDecoration: 'none',
-        color: 'text.primary',
         display: 'flex',
         alignItems: 'center',
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{ fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1 }}
-      >
-        {siteMeta.logoText}
-      </Typography>
+      <Box
+        component="img"
+        src="/images/logo.svg"
+        alt={siteMeta.logoText}
+        sx={{ height: 28, width: 'auto', display: 'block' }}
+      />
     </Box>
   );
 
   const navContent = (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      {/* Pill 형태 네비게이션 아이템 */}
-      <Box component="nav" sx={{ display: 'flex', gap: 0.5 }}>
+      {/* 텍스트 버튼 네비게이션 아이템 */}
+      <Box component="nav" sx={{ display: 'flex', gap: 0 }}>
         {NAV_MENU_ITEMS.map((item) => {
           const isActive = item.id === activeId;
           return (
@@ -68,23 +66,16 @@ function SiteShell({ children }) {
               sx={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                px: 1.75,
+                px: 1.5,
                 py: 0.75,
                 fontSize: '0.8125rem',
                 fontWeight: isActive ? 600 : 400,
-                borderRadius: '50px',
-                border: '1px solid',
-                borderColor: isActive ? 'primary.main' : 'divider',
-                backgroundColor: isActive ? 'primary.main' : 'transparent',
-                color: isActive ? 'primary.contrastText' : 'text.primary',
+                color: isActive ? 'primary.main' : 'text.primary',
                 textDecoration: 'none',
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'color 200ms',
                 whiteSpace: 'nowrap',
                 cursor: 'pointer',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  backgroundColor: isActive ? 'primary.dark' : 'action.hover',
-                },
+                '&:hover': { color: 'primary.main' },
               }}
             >
               {item.label}
@@ -125,6 +116,7 @@ function SiteShell({ children }) {
       drawerFooter={drawerFooter}
       breakpoint="md"
       headerHeight={64}
+      isHeaderFloating
     >
       {children}
     </AppShell>

@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import SpacesPage from './SpacesPage';
+import SpacesCardPage from './SpacesCardPage';
 import SiteShell from '../SiteShell';
 
 export default {
@@ -19,5 +19,5 @@ export default {
 };
 
 export const Default = {
-  render: () => <SpacesPage />,
+  render: () => <SpacesCardPage />,
 };

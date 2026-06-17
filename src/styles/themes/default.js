@@ -131,7 +131,7 @@ const palette = {
 // 2. Typography Tokens (타이포그래피 토큰)
 // ============================================================
 const SERIF = '"Cormorant Garamond", Georgia, serif';
-const SANS = '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
+const SANS = '"NEXON Lv2 Gothic", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif';
 
 const typography = {
   // 기본 폰트 패밀리 (한글 본문)
@@ -148,21 +148,20 @@ const typography = {
   fontWeightMedium: 500,
   fontWeightBold: 700,
 
-  // 헤딩 — h1·h2: 에디토리얼 세리프, h3+: Pretendard
+  // 헤딩 — 전체 NEXON Lv2 Gothic
   h1: {
-    fontFamily: SERIF,
+    fontFamily: SANS,
     fontWeight: 700,
-    fontStyle: 'italic',
     fontSize: 'clamp(2.5rem, 5vw, 4rem)',
     lineHeight: 1.15,
-    letterSpacing: '-0.01em',
+    letterSpacing: '-0.02em',
   },
   h2: {
-    fontFamily: SERIF,
+    fontFamily: SANS,
     fontWeight: 700,
     fontSize: '2.5rem',
     lineHeight: 1.2,
-    letterSpacing: '-0.01em',
+    letterSpacing: '-0.02em',
   },
   h3: {
     fontFamily: SANS,
@@ -344,6 +343,29 @@ const components = {
       },
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiFilledInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: '12px',
+        '&::before': { display: 'none' },
+        '&::after': { display: 'none' },
+      },
+    },
+  },
+  MuiSelect: {
+    styleOverrides: {
+      outlined: {
+        borderRadius: '12px',
+      },
+    },
+  },
   MuiCard: {
     styleOverrides: {
       root: {
@@ -362,6 +384,60 @@ const components = {
       elevation2: { boxShadow: customShadows.md },
       elevation3: { boxShadow: customShadows.lg },
       elevation4: { boxShadow: customShadows.xl },
+    },
+  },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        borderRadius: '20px',
+      },
+    },
+  },
+  MuiAlert: {
+    styleOverrides: {
+      root: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiSnackbar: {
+    styleOverrides: {
+      root: {
+        '& .MuiSnackbarContent-root': {
+          borderRadius: '50px',
+        },
+      },
+    },
+  },
+  MuiTooltip: {
+    styleOverrides: {
+      tooltip: {
+        borderRadius: '8px',
+      },
+    },
+  },
+  MuiMenu: {
+    styleOverrides: {
+      paper: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiPopover: {
+    styleOverrides: {
+      paper: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiLinearProgress: {
+    styleOverrides: {
+      root: {
+        borderRadius: '50px',
+      },
+      bar: {
+        borderRadius: '50px',
+      },
     },
   },
 };

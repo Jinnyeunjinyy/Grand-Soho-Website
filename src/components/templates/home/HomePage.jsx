@@ -4,6 +4,15 @@ import PartnerProgramSection from './PartnerProgramSection';
 import GallerySection from './GallerySection';
 import LocationSection from './LocationSection';
 
+const HERO_IMAGE = '/images/exterior.jpeg';
+
+const GALLERY_IMAGES = [
+  { src: '/images/lounge-01.jpeg',       alt: '라운지 공간' },
+  { src: '/images/office-101-01.jpeg',   alt: '개인 업무 공간' },
+  { src: '/images/meeting-ut-01.jpeg',   alt: '미팅룸' },
+  { src: '/images/lounge-02.jpeg',       alt: '커뮤니티 라운지' },
+];
+
 /**
  * HomePage 컴포넌트
  *
@@ -11,18 +20,19 @@ import LocationSection from './LocationSection';
  * Hero → Feature → PartnerProgram → Gallery → Location 섹션 순서로 구성.
  *
  * Props:
- * @param {Array} galleryImages - 갤러리 이미지 배열 [Optional, 기본값: []]
+ * @param {string} heroImage - Hero 우측 패널 이미지 경로 [Optional]
+ * @param {Array} galleryImages - 갤러리 이미지 배열 [Optional]
  *
  * Example usage:
- * <HomePage galleryImages={[{ src: '/img/space1.jpg', alt: '라운지' }]} />
+ * <HomePage />
  */
-function HomePage({ galleryImages = [] }) {
+function HomePage({ heroImage = HERO_IMAGE, galleryImages = GALLERY_IMAGES }) {
   return (
     <main>
-      <HeroSection />
-      <FeatureSection />
+      <HeroSection imageSrc={heroImage} />
       <PartnerProgramSection />
       <GallerySection images={galleryImages} />
+      <FeatureSection />
       <LocationSection />
     </main>
   );

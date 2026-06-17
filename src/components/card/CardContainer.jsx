@@ -52,10 +52,10 @@ const CardContainer = forwardRef(function CardContainer({
    * Border radius 맵
    */
   const radiusMap = {
-    none: 0,
-    sm: 1,
-    md: 2,
-    lg: 3,
+    none: '0px',
+    sm: '8px',
+    md: '12px',
+    lg: '20px',
   };
 
   /**

@@ -25,7 +25,7 @@ const TABS = [ALL_TAB, ...spaceTypes];
  * Example usage:
  * <SpacesPage reservationUrl="https://booking.naver.com/..." />
  */
-function SpacesPage({ reservationUrl = '#', sx }) {
+function SpacesPage({ reservationUrl = spacesMeta.reservationUrl, sx }) {
   const [activeTab, setActiveTab] = useState('all');
 
   const filtered = activeTab === 'all'
@@ -39,20 +39,19 @@ function SpacesPage({ reservationUrl = '#', sx }) {
         sx={{
           py: { xs: 8, md: 12 },
           px: { xs: 3, sm: 5, md: 10, lg: 14 },
-          backgroundColor: 'secondary.main',
-          color: 'secondary.contrastText',
+          backgroundColor: 'background.default',
         }}
       >
         <Typography
           variant="overline"
-          sx={{ color: 'primary.light', letterSpacing: '0.12em', display: 'block', mb: 1 }}
+          sx={{ color: 'accent.main', letterSpacing: '0.14em', display: 'block', mb: 1 }}
         >
           Spaces
         </Typography>
-        <Typography variant="h2" sx={{ fontWeight: 900, mb: 2 }}>
+        <Typography variant="h2" sx={{ fontWeight: 700, mb: 2 }}>
           공간 안내
         </Typography>
-        <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.72)', maxWidth: 480 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 480 }}>
           개인실부터 라운지까지. 팀 규모에 맞는 공간을 선택하세요.
         </Typography>
       </Box>
@@ -103,17 +102,19 @@ function SpacesPage({ reservationUrl = '#', sx }) {
 
                 <Box sx={{ p: 4, flex: 1 }}>
                   <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.1em' }}>
-                    {plan.capacity}
+                    {plan.capacity}{plan.contract ? ` · ${plan.contract}` : ''}
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, mb: 1 }}>
                     {plan.name}
                   </Typography>
-                  <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700, mb: 0.5 }}>
+                  <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700, mb: plan.priceNote ? 0.5 : 0 }}>
                     {plan.priceLabel}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {plan.priceNote}
-                  </Typography>
+                  {plan.priceNote && (
+                    <Typography variant="caption" color="text.secondary">
+                      {plan.priceNote}
+                    </Typography>
+                  )}
 
                   <Divider sx={{ my: 3 }} />
 
@@ -149,7 +150,7 @@ function SpacesPage({ reservationUrl = '#', sx }) {
           sx={{
             mt: 8,
             p: { xs: 4, md: 6 },
-            backgroundColor: 'grey.50',
+            backgroundColor: 'background.subtle',
             border: '1px solid',
             borderColor: 'divider',
             display: 'flex',
