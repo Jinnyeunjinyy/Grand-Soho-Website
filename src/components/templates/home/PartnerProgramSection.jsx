@@ -5,9 +5,8 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import GavelIcon from '@mui/icons-material/Gavel';
 import HubIcon from '@mui/icons-material/Hub';
-import { BenefitCard } from '../../card/BenefitCard';
+import { BenefitCardSection } from '../../card/BenefitCardSection';
 import { partnerBenefits, partnerProgramMeta } from '../../../data/partnerProgram';
-import FadeTransition from '../../motion/FadeTransition';
 
 const ICON_MAP = {
   RocketLaunch: RocketLaunchIcon,
@@ -20,7 +19,7 @@ const ICON_MAP = {
  * PartnerProgramSection 컴포넌트
  *
  * 홈 페이지 VC 파트너 프로그램 혜택 섹션 (4종).
- * BenefitCard + Packed Rounded Cards 레이아웃 사용.
+ * BenefitCardSection 레이아웃 템플릿 사용.
  *
  * Props:
  * @param {Array} benefits - 혜택 카드 데이터 배열 [Optional, 기본값: partnerBenefits]
@@ -31,6 +30,11 @@ const ICON_MAP = {
  * <PartnerProgramSection />
  */
 function PartnerProgramSection({ benefits = partnerBenefits, meta = partnerProgramMeta, sx }) {
+  const resolvedItems = benefits.map((b) => ({
+    ...b,
+    icon: ICON_MAP[b.icon] ?? null,
+  }));
+
   return (
     <Box
       component="section"
@@ -65,52 +69,7 @@ function PartnerProgramSection({ benefits = partnerBenefits, meta = partnerProgr
         </Typography>
       </Box>
 
-      {/* 카드 목록 — 모바일: 수평 스크롤 캐러셀 / 데스크탑: 4컬럼 그리드 */}
-      <Box
-        sx={{
-          display: { xs: 'flex', md: 'grid' },
-          gridTemplateColumns: { md: 'repeat(4, 1fr)' },
-          flexDirection: 'row',
-          gap: '6px',
-          mx: { xs: -4, sm: -6, md: 0 },
-          px: { xs: 4, sm: 6, md: 0 },
-          overflowX: { xs: 'auto', md: 'visible' },
-          scrollSnapType: { xs: 'x mandatory', md: 'none' },
-          scrollBehavior: 'smooth',
-          '&::-webkit-scrollbar': { display: 'none' },
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
-      >
-        {benefits.map((benefit, idx) => {
-          const IconComponent = ICON_MAP[benefit.icon];
-          return (
-            <Box
-              key={benefit.id}
-              sx={{
-                flexShrink: { xs: 0, md: 1 },
-                width: { xs: '78%', sm: '55%', md: 'auto' },
-                scrollSnapAlign: { xs: 'start', md: 'none' },
-                display: 'flex',
-              }}
-            >
-              <FadeTransition direction="up" delay={idx * 80} isTriggerOnView sx={{ height: '100%', width: '100%' }}>
-                <BenefitCard
-                  icon={IconComponent ?? null}
-                  tag={benefit.tag}
-                  title={benefit.title}
-                  description={benefit.description}
-                  frequency={benefit.frequency}
-                  partner={benefit.partner}
-                  sx={{ height: '100%' }}
-                />
-              </FadeTransition>
-            </Box>
-          );
-        })}
-        {/* 마지막 카드 우측 여백 (모바일 전용) */}
-        <Box sx={{ display: { xs: 'block', md: 'none' }, flexShrink: 0, width: { xs: 16, sm: 24 } }} />
-      </Box>
+      <BenefitCardSection items={resolvedItems} />
     </Box>
   );
 }
