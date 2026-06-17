@@ -73,7 +73,7 @@ const GNB = forwardRef(function GNB({
 
   /* ── 기본 헤더 스타일 (isFloating: false) ── */
   const headerStyles = {
-    position: isSticky ? 'sticky' : 'relative',
+    position: isFloating ? 'fixed' : (isSticky ? 'sticky' : 'relative'),
     top: 0,
     left: 0,
     right: 0,
@@ -119,7 +119,7 @@ const GNB = forwardRef(function GNB({
 
   /* ── 내비게이션 우측 영역 ── */
   const renderNavRight = () => (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'nowrap', flexShrink: 0 }}>
       {persistent}
       {!isMobile && navContent}
       {isMobile && navContent && (
@@ -141,6 +141,7 @@ const GNB = forwardRef(function GNB({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              flexWrap: 'nowrap',
               width: '100%',
               height,
               px: { xs: 2, md: 3 },

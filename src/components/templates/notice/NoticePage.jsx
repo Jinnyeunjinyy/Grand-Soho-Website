@@ -9,12 +9,14 @@ import { CategoryTab } from '../../in-page-navigation/CategoryTab';
 import { notices, noticeCategories } from '../../../data/notices';
 
 const CATEGORY_LABEL = {
+  press: '언론 보도',
   operation: '운영 안내',
   event: '이벤트',
   vacancy: '공실 안내',
 };
 
 const CATEGORY_COLOR = {
+  press: 'secondary',
   operation: 'default',
   event: 'primary',
   vacancy: 'success',

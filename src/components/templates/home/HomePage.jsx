@@ -29,7 +29,7 @@ const GALLERY_IMAGES = [
 function HomePage({ heroImage = HERO_IMAGE, galleryImages = GALLERY_IMAGES }) {
   return (
     <main>
-      <HeroSection imageSrc={heroImage} />
+      <HeroSection imageSrc={heroImage} sx={{ mt: '-84px' }} />
       <PartnerProgramSection />
       <GallerySection images={galleryImages} />
       <FeatureSection />

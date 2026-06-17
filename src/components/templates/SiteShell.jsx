@@ -52,7 +52,7 @@ function SiteShell({ children }) {
   );
 
   const navContent = (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap', flexShrink: 0 }}>
       {/* 텍스트 버튼 네비게이션 아이템 */}
       <Box component="nav" sx={{ display: 'flex', gap: 0 }}>
         {NAV_MENU_ITEMS.map((item) => {

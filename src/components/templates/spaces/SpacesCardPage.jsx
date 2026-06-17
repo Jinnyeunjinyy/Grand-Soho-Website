@@ -76,7 +76,9 @@ function SpacesCardPage({ reservationUrl = spacesMeta.reservationUrl, sx }) {
                 />
                 <CardContent>
                   <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    {plan.name}{plan.contract ? ` · ${plan.contract}` : ''}
+                    {plan.name}
+                    {plan.capacity ? ` · ${plan.capacity}` : ''}
+                    {plan.contract ? ` · ${plan.contract}` : ''}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {plan.priceLabel}

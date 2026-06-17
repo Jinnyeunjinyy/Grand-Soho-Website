@@ -10,12 +10,14 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { notices } from '../../../data/notices';
 
 const CATEGORY_LABEL = {
+  press: '언론 보도',
   operation: '운영 안내',
   event: '이벤트',
   vacancy: '공실 안내',
 };
 
 const CATEGORY_COLOR = {
+  press: 'secondary',
   operation: 'default',
   event: 'primary',
   vacancy: 'success',
@@ -115,6 +117,20 @@ function NoticeDetailPage({ notice, onBack, onNavigate, sx }) {
         >
           {notice.content}
         </Typography>
+
+        {notice.link && (
+          <Box sx={{ mt: 4 }}>
+            <Button
+              variant="outlined"
+              href={notice.link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="small"
+            >
+              {notice.link.label}
+            </Button>
+          </Box>
+        )}
 
         <Divider sx={{ my: 6 }} />
 

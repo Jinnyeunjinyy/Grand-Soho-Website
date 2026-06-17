@@ -3,8 +3,8 @@
  */
 
 export const spaceTypes = [
-  { id: 'private', label: '개인실' },
-  { id: 'meeting', label: '회의실' },
+  { id: 'private', label: '오피스' },
+  { id: 'meeting', label: '미팅룸' },
   { id: 'lounge', label: '라운지' },
 ];
 
@@ -17,7 +17,7 @@ const PRIVATE_FEATURES = [
 ];
 
 const MEETING_FEATURES_8 = [
-  '최대 8인 수용',
+  '최대 9인 수용',
   '모니터 · 화이트보드',
   '화상회의 장비',
   '음료 서비스',
@@ -114,7 +114,7 @@ export const spacePlans = [
     type: 'meeting',
     name: '미팅룸 1',
     image: '/images/meeting-ut-01.jpeg',
-    capacity: '최대 8명',
+    capacity: '9인실',
     contract: '',
     priceLabel: '34,000원 / 시간',
     priceNote: '반일 · 종일 패키지 별도',
@@ -126,7 +126,7 @@ export const spacePlans = [
     type: 'meeting',
     name: '미팅룸 2',
     image: '/images/meeting-02.jpeg',
-    capacity: '최대 6명',
+    capacity: '6인실',
     contract: '',
     priceLabel: '22,000원 / 시간',
     priceNote: '반일 · 종일 패키지 별도',

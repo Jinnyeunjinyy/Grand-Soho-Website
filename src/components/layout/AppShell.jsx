@@ -85,6 +85,7 @@ const AppShell = forwardRef(function AppShell({
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
+          pt: isHeaderFloating ? `${headerHeight + 20}px` : 0,
         }}
       >
         {children}

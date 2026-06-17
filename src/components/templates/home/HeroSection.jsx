@@ -86,7 +86,7 @@ function HeroSection({ copy = heroCopy, imageSrc, imageAlt = 'Grand Soho 공간'
           sx={{
             color: 'common.white',
             mb: 4,
-            whiteSpace: 'pre-line',
+            whiteSpace: 'nowrap',
           }}
         >
           {copy.headline}
