@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import CheckIcon from '@mui/icons-material/Check';
 import StarIcon from '@mui/icons-material/Star';
 import { CategoryTab } from '../../in-page-navigation/CategoryTab';
-import { spacePlans, spaceTypes, spacesMeta } from '../../../data/spaces';
+import { spacePlans, spaceTypes, spacesMeta } from '../../../data';
 
 const ALL_TAB = { id: 'all', label: '전체' };
 const TABS = [ALL_TAB, ...spaceTypes];

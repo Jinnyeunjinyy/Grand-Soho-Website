@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { notices } from '../../../data/notices';
+import { notices } from '../../../data';
 
 const CATEGORY_LABEL = {
   press: '언론 보도',

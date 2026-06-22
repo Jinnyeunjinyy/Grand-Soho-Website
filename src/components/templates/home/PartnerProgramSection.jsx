@@ -6,7 +6,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import GavelIcon from '@mui/icons-material/Gavel';
 import HubIcon from '@mui/icons-material/Hub';
 import { BenefitCardSection } from '../../card/BenefitCardSection';
-import { partnerBenefits, partnerProgramMeta } from '../../../data/partnerProgram';
+import { partnerBenefits, partnerProgramMeta } from '../../../data';
 
 const ICON_MAP = {
   RocketLaunch: RocketLaunchIcon,

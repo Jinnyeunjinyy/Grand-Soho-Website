@@ -16,7 +16,7 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import PrintIcon from '@mui/icons-material/Print';
 import { CategoryTab } from '../../in-page-navigation/CategoryTab';
 import { BenefitCardSection } from '../../card/BenefitCardSection';
-import { spacePlans, spaceTypes, spacesMeta } from '../../../data/spaces';
+import { spacePlans, spaceTypes, spacesMeta } from '../../../data';
 
 const AMENITIES = [
   { id: 'coffee', icon: LocalCafeIcon, title: '커피 무료', description: '스페셜티 원두 커피를 자유롭게 즐기세요.' },

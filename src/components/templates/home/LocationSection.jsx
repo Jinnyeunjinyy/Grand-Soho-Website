@@ -9,8 +9,7 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { locationInfo, contactInfo } from '../../../data/contact';
-import { navCta } from '../../../data/navigation';
+import { locationInfo, contactInfo, navCta } from '../../../data';
 
 /**
  * LocationSection 컴포넌트

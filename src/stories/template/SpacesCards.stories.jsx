@@ -11,7 +11,7 @@ import Divider from '@mui/material/Divider';
 import CheckIcon from '@mui/icons-material/Check';
 import StarIcon from '@mui/icons-material/Star';
 import Grid from '@mui/material/Grid';
-import { spacePlans, spacesMeta } from '../../data/spaces';
+import { spacePlans, spacesMeta } from '../../data';
 
 export default {
   title: 'Template/Spaces Cards',

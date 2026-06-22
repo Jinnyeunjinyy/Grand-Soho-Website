@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { AppShell } from '../layout/AppShell';
-import { navItems, navCta, siteMeta } from '../../data/navigation';
+import { navItems, navCta, siteMeta } from '../../data';
 
 const NAV_MENU_ITEMS = navItems.map((item) => ({
   id: item.id,

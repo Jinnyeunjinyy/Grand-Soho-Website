@@ -6,7 +6,7 @@ import Chip from '@mui/material/Chip';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CategoryTab } from '../../in-page-navigation/CategoryTab';
-import { notices, noticeCategories } from '../../../data/notices';
+import { notices, noticeCategories } from '../../../data';
 
 const CATEGORY_LABEL = {
   press: '언론 보도',

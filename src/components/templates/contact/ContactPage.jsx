@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider';
 import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import { inquiryTypes, contactInfo } from '../../../data/contact';
+import { inquiryTypes, contactInfo } from '../../../data';
 
 const INITIAL_FORM = {
   name: '',

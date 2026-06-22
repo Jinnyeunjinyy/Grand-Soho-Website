@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Divider from '@mui/material/Divider';
 import { DocumentTitle, PageContainer, SectionTitle } from '../../components/storybookDocumentation';
 
-import { componentTokenMap, tokenCategories, componentList } from '../../data/componentTokenMap';
+import { componentTokenMap, tokenCategories, componentList } from '../../data/meta/componentTokenMap';
 
 export default {
   title: 'Style/Component Tokens',

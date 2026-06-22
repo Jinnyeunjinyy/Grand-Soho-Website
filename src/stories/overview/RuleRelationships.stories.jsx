@@ -14,7 +14,7 @@ import {
   edgeTypes,
   priorityMeta,
   conditionMatrix,
-} from '../../data/ruleRelationships';
+} from '../../data/meta/ruleRelationships';
 
 export default {
   title: 'Overview/Rule Relationships',

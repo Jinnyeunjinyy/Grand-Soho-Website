@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import NoticePage from './NoticePage';
 import NoticeDetailPage from './NoticeDetailPage';
 import SiteShell from '../SiteShell';
-import { notices } from '../../../data/notices';
+import { notices } from '../../../data';
 
 export default {
   title: 'Page/Notice',

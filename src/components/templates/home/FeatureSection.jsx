@@ -4,7 +4,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BoltIcon from '@mui/icons-material/Bolt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { features } from '../../../data/features';
+import { features } from '../../../data';
 import FadeTransition from '../../motion/FadeTransition';
 import { FeaturedIcon } from '../../../common/ui';
 

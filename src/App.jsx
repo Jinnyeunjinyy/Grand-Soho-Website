@@ -8,8 +8,7 @@ import SpacesCardPage from './components/templates/spaces/SpacesCardPage';
 import ContactPage from './components/templates/contact/ContactPage';
 import NoticePage from './components/templates/notice/NoticePage';
 import NoticeDetailPage from './components/templates/notice/NoticeDetailPage';
-import { notices } from './data/notices';
-import { navCta } from './data/navigation';
+import { notices, navCta } from './data';
 
 function NoticeListRoute() {
   const navigate = useNavigate();
