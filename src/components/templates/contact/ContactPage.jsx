@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -14,7 +15,7 @@ import Divider from '@mui/material/Divider';
 import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import { inquiryTypes, contactInfo } from '../../../data';
+import { inquiryTypes, contactInfo, emailjsConfig } from '../../../data';
 
 const INITIAL_FORM = {
   name: '',
@@ -27,16 +28,15 @@ const INITIAL_FORM = {
  * ContactPage 컴포넌트
  *
  * /contact 페이지. 입주 상담 / 회의실 / 기타 문의 폼.
- * 제출 시 onSubmit 핸들러 호출 (EmailJS 연동은 상위에서 처리).
+ * 제출 시 EmailJS로 contactInfo.operatorEmail(ehong@gvc.im)에 메일 전송.
  *
  * Props:
- * @param {function} onSubmit - 폼 데이터 제출 핸들러 async (formData) => void [Optional]
  * @param {object} sx - 추가 스타일 [Optional]
  *
  * Example usage:
- * <ContactPage onSubmit={async (data) => await emailjs.send(...)} />
+ * <ContactPage />
  */
-function ContactPage({ onSubmit, sx }) {
+function ContactPage({ sx }) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [status, setStatus] = useState(null); // 'success' | 'error' | null
   const [isLoading, setIsLoading] = useState(false);
@@ -54,9 +54,21 @@ function ContactPage({ onSubmit, sx }) {
 
     setIsLoading(true);
     try {
-      if (onSubmit) {
-        await onSubmit(form);
-      }
+      const inquiryLabel = inquiryTypes.find((t) => t.value === form.inquiryType)?.label ?? form.inquiryType;
+
+      await emailjs.send(
+        emailjsConfig.serviceId,
+        emailjsConfig.templateId,
+        {
+          to_email: contactInfo.operatorEmail,
+          from_name: form.name,
+          from_phone: form.phone,
+          inquiry_type: inquiryLabel,
+          message: form.message,
+        },
+        emailjsConfig.publicKey,
+      );
+
       setStatus('success');
       setForm(INITIAL_FORM);
     } catch {

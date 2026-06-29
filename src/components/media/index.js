@@ -19,3 +19,6 @@ export { Indicator } from '../../common/ui/Indicator.jsx';
 
 // CarouselIndicator - 레거시 호환용 (Indicator 사용 권장)
 export { CarouselIndicator } from './CarouselIndicator.jsx';
+
+// HeroCanvas - Hero 섹션 3D 와이어프레임 오버레이 캔버스
+export { default as HeroCanvas } from './HeroCanvas.jsx';
