@@ -14,9 +14,14 @@ const SVG_CENTER_X = 110;
 const SVG_CENTER_Y = 28.5;
 const THICKNESS = 0.5;
 const SVG_DEPTH = THICKNESS / SVG_SCALE;
-const K = 140;
-const C = 18;
+// 언더댐핑 스프링(C가 임계감쇠 2*sqrt(K)보다 작음)이라 착지 시 살짝
+// 튕겼다가 잦아든다 — 딱 멈추는 것보다 훨씬 역동적으로 보인다.
+const K = 220;
+const C = 13;
 const FALL_OFFSET = 12;
+// 낙하 중 랜덤하게 회전하다가 착지와 함께 수평으로 정렬되는 텀블링 효과
+const ROT_K = 90;
+const ROT_C = 9;
 
 // ── 셰이프 팩토리 ──────────────────────────────────────────
 function makeRing(cx, cy, outerR, innerR) {
