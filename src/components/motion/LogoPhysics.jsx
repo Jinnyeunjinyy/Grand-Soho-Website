@@ -1,5 +1,5 @@
-import { Suspense, useState, useEffect } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Suspense, useState, useRef, useCallback } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -120,54 +120,70 @@ const LETTERS = (() => {
   });
 })();
 
-// ── 히어로 투명 모드용 카메라 세팅 ─────────────────────────
-// 카메라를 14 거리로 물러나 50% 축소 + lookAt y=4.37로 올려
-// floor(y=-2.15)가 캔버스 하단에 위치하도록 함
-function CameraRig({ tx, ty, tz }) {
-  const { camera } = useThree();
-  useEffect(() => {
-    camera.lookAt(tx, ty, tz);
-  }, [tx, ty, tz]);
-  return null;
-}
+// ── 히어로 투명 모드 배치 ───────────────────────────────────
+// 카메라를 옆으로 돌리거나 크롭하는 대신, 컨테이너/글자의 world 좌표
+// 자체를 우측 하단으로 이동시킨다. 카메라는 회전 없이 원점을 보는
+// 기본값 그대로 두므로 원근 왜곡이나 크롭 잘림 문제가 생기지 않는다.
+const HERO_OFFSET_X = 5;   // 우측 이동량 (목표치, 화면에 안 들어오면 자동 축소)
+const HERO_OFFSET_Y = 0.3; // 상하 미세 조정량
+const HERO_EDGE_MARGIN = 0.6; // 화면 가장자리와 벽 사이 여백
 
 // ── 투명 박스 컨테이너 ─────────────────────────────────────
-const BOX_HW = 3.5;   // x 방향 반폭
+const BOX_HW = 3.5;   // x 방향 반폭 (투명 모드는 화면 폭에 맞춰 자동 계산)
 const BOX_HD = 0.38;  // z 방향 반깊이 (얇은 상자)
 const BOX_GY = -2.15;
 const WALL_T = 0.15;
 
+// 현재 캔버스에서 실제로 보이는 world 폭(viewport.width)을 기준으로
+// 오프셋/반폭을 계산해, 어떤 화면 크기에서도 벽이 좌우로 화면 밖을
+// 벗어나지 않도록 한다.
+function useHeroBounds(transparent) {
+  const { viewport } = useThree();
+  if (!transparent) return { halfWidth: BOX_HW, offsetX: 0 };
+  const visibleHalf = viewport.width / 2;
+  const offsetX = Math.min(HERO_OFFSET_X, Math.max(0, visibleHalf - 2 - WALL_T));
+  const halfWidth = Math.min(
+    BOX_HW * 2,
+    Math.max(1.5, visibleHalf - offsetX - WALL_T - HERO_EDGE_MARGIN),
+  );
+  return { halfWidth, offsetX };
+}
+
 function Container({ transparent = false }) {
+  const { halfWidth, offsetX } = useHeroBounds(transparent);
+  const gy = BOX_GY + (transparent ? HERO_OFFSET_Y : 0);
   const wH = 14;
-  const wCY = BOX_GY + wH;
+  const wCY = gy + wH;
   return (
     <>
-      <RigidBody type="fixed" position={[0, BOX_GY, 0]}>
-        <CuboidCollider args={[BOX_HW + WALL_T, 0.15, BOX_HD + WALL_T]} />
+      <RigidBody type="fixed" position={[offsetX, gy, 0]}>
+        <CuboidCollider args={[halfWidth + WALL_T, 0.15, BOX_HD + WALL_T]} />
         {!transparent && (
           <mesh receiveShadow>
-            <boxGeometry args={[(BOX_HW + WALL_T) * 2, 0.3, (BOX_HD + WALL_T) * 2]} />
+            <boxGeometry args={[(halfWidth + WALL_T) * 2, 0.3, (BOX_HD + WALL_T) * 2]} />
             <meshStandardMaterial color="#130d0e" roughness={0.95} />
           </mesh>
         )}
       </RigidBody>
-      <RigidBody type="fixed" position={[-(BOX_HW + WALL_T), wCY, 0]}>
+      <RigidBody type="fixed" position={[offsetX - (halfWidth + WALL_T), wCY, 0]}>
         <CuboidCollider args={[WALL_T, wH, BOX_HD + WALL_T]} />
       </RigidBody>
-      <RigidBody type="fixed" position={[BOX_HW + WALL_T, wCY, 0]}>
+      <RigidBody type="fixed" position={[offsetX + (halfWidth + WALL_T), wCY, 0]}>
         <CuboidCollider args={[WALL_T, wH, BOX_HD + WALL_T]} />
       </RigidBody>
-      <RigidBody type="fixed" position={[0, wCY, BOX_HD + WALL_T]}>
-        <CuboidCollider args={[BOX_HW + WALL_T, wH, WALL_T]} />
+      <RigidBody type="fixed" position={[offsetX, wCY, BOX_HD + WALL_T]}>
+        <CuboidCollider args={[halfWidth + WALL_T, wH, WALL_T]} />
       </RigidBody>
-      <RigidBody type="fixed" position={[0, wCY, -(BOX_HD + WALL_T)]}>
-        <CuboidCollider args={[BOX_HW + WALL_T, wH, WALL_T]} />
+      <RigidBody type="fixed" position={[offsetX, wCY, -(BOX_HD + WALL_T)]}>
+        <CuboidCollider args={[halfWidth + WALL_T, wH, WALL_T]} />
       </RigidBody>
     </>
   );
 }
 
 function PhysicsScene({ transparent = false }) {
+  const { offsetX } = useHeroBounds(transparent);
+  const offsetY = transparent ? HERO_OFFSET_Y : 0;
   // 높이 차이로 낙하 순서 만들기 (S→O→H→O 순서로 바닥 도달)
   // S: y=8, O: y=13, H: y=18, O2: y=23 → 중력 9.81 기준 약 1초 간격
   const [startData] = useState(() =>
@@ -192,7 +208,11 @@ function PhysicsScene({ transparent = false }) {
       {LETTERS.map((letter, i) => (
         <RigidBody
           key={letter.name}
-          position={startData[i].pos}
+          position={[
+            startData[i].pos[0] + offsetX,
+            startData[i].pos[1] + offsetY,
+            startData[i].pos[2],
+          ]}
           rotation={[0, startData[i].rotY, 0]}
           angularVelocity={startData[i].angVel}
           colliders="hull"
@@ -240,12 +260,11 @@ function LogoPhysics({ width = '100%', height = 600, isTransparent = false, sx }
       <Canvas
         shadows
         camera={isTransparent
-          ? { position: [0, 4, 10], fov: 50 }
+          ? { position: [0, 0, 16], fov: 38 }
           : { position: [0, 2.5, 7], fov: 50 }
         }
         gl={{ antialias: true, alpha: isTransparent }}
       >
-        {isTransparent && <CameraRig tx={-3.2} ty={2.5} tz={0} />}
         {!isTransparent && <color attach="background" args={['#1c1415']} />}
         <ambientLight intensity={0.35} />
         <directionalLight
@@ -255,7 +274,7 @@ function LogoPhysics({ width = '100%', height = 600, isTransparent = false, sx }
           shadow-mapSize={[2048, 2048]}
           shadow-camera-far={25}
           shadow-camera-left={-6}
-          shadow-camera-right={6}
+          shadow-camera-right={isTransparent ? 14 : 6}
           shadow-camera-top={10}
           shadow-camera-bottom={-4}
         />

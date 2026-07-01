@@ -1,5 +1,5 @@
 import { Suspense, useRef, useEffect, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import Box from '@mui/material/Box';
@@ -78,6 +78,11 @@ const PIECES = [
   { color: '#463335', svgCX: 14.15,  svgCY: 42.65, delay: 0.26, shape: makePoly([[28.3,28.5],[0,56.8],[28.3,56.8]]) },
 ];
 
+// ── 호버 인터랙션 ──────────────────────────────────────────
+// 정착 후에도 호버 트리거에 반응하도록, 값은 ref로만 관리하고
+// (리렌더 없음) 같은 스프링 물리로 목표 y를 살짝 올렸다 내린다.
+const HOVER_LIFT = 0.4;
+
 // ── 스프링 낙하 컨테이너 ───────────────────────────────────
 function FallingPiece({ piece, isGlass }) {
   const { shape, svgCX, svgCY, color, delay } = piece;
@@ -85,10 +90,12 @@ function FallingPiece({ piece, isGlass }) {
   const targetY = -(svgCY - SVG_CENTER_Y) * SVG_SCALE;
 
   const groupRef = useRef();
-  const posY    = useRef(targetY + FALL_OFFSET);
-  const velY    = useRef(0);
-  const started = useRef(false);
-  const settled = useRef(false);
+  const posY     = useRef(targetY + FALL_OFFSET);
+  const velY     = useRef(0);
+  const started  = useRef(false);
+  const settled  = useRef(false);
+  const hovered  = useRef(false);
+  const prevHovered = useRef(false);
 
   useEffect(() => {
     const t = setTimeout(() => { started.current = true; }, delay * 1000);
@@ -97,13 +104,18 @@ function FallingPiece({ piece, isGlass }) {
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
+    if (hovered.current !== prevHovered.current) {
+      prevHovered.current = hovered.current;
+      settled.current = false; // 호버 상태가 바뀌면 스프링을 다시 깨운다
+    }
+    const target = targetY + (hovered.current ? HOVER_LIFT : 0);
     if (started.current && !settled.current) {
       const dt = Math.min(delta, 0.05);
-      const force = -K * (posY.current - targetY) - C * velY.current;
+      const force = -K * (posY.current - target) - C * velY.current;
       velY.current += force * dt;
       posY.current += velY.current * dt;
-      if (Math.abs(posY.current - targetY) < 0.001 && Math.abs(velY.current) < 0.001) {
-        posY.current = targetY;
+      if (Math.abs(posY.current - target) < 0.001 && Math.abs(velY.current) < 0.001) {
+        posY.current = target;
         velY.current = 0;
         settled.current = true;
       }
@@ -126,9 +138,26 @@ function FallingPiece({ piece, isGlass }) {
 
   useEffect(() => () => geometry.dispose(), [geometry]);
 
+  const handlePointerOver = (e) => {
+    e.stopPropagation();
+    hovered.current = true;
+    document.body.style.cursor = 'pointer';
+  };
+
+  const handlePointerOut = (e) => {
+    e.stopPropagation();
+    hovered.current = false;
+    document.body.style.cursor = 'auto';
+  };
+
   return (
     <group ref={groupRef} position={[targetX, targetY + FALL_OFFSET, 0]}>
-      <mesh castShadow geometry={geometry}>
+      <mesh
+        castShadow
+        geometry={geometry}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+      >
         {isGlass ? (
           <meshPhysicalMaterial
             color="#f2f0ed"
@@ -140,21 +169,47 @@ function FallingPiece({ piece, isGlass }) {
             side={THREE.DoubleSide}
           />
         ) : (
-          <meshStandardMaterial color={color} roughness={0.25} metalness={0.5} side={THREE.DoubleSide} />
+          <meshStandardMaterial
+            color={color}
+            roughness={0.68}
+            metalness={0}
+            envMapIntensity={0.5}
+            side={THREE.DoubleSide}
+          />
         )}
       </mesh>
     </group>
   );
 }
 
-function Scene({ isGlass }) {
+// ── 히어로 투명 모드 배치 ───────────────────────────────────
+// 캔버스 컨테이너 자체를 줄이면 orthographic 카메라가 같은 zoom을
+// 유지한 채 화면을 그대로 크롭해버린다. 대신 그룹 스케일/좌표를
+// 직접 줄이고 옮겨서, 화면 크기가 달라져도 잘리지 않게 한다.
+const LOGO_HALF_WIDTH = SVG_CENTER_X * SVG_SCALE; // 4.4
+const HERO_SCALE = 0.66;
+const HERO_OFFSET_TARGET = 3.2;
+const HERO_EDGE_MARGIN = 0.4;
+
+function useAssemblyHeroBounds(isTransparent) {
+  const { viewport } = useThree();
+  if (!isTransparent) return { scale: 1, offsetX: 0 };
+  const scaledHalfWidth = LOGO_HALF_WIDTH * HERO_SCALE;
+  const visibleHalf = viewport.width / 2;
+  const maxOffset = Math.max(0, visibleHalf - scaledHalfWidth - HERO_EDGE_MARGIN);
+  const offsetX = Math.min(HERO_OFFSET_TARGET, maxOffset);
+  return { scale: HERO_SCALE, offsetX };
+}
+
+function Scene({ isGlass, isTransparent }) {
+  const { scale, offsetX } = useAssemblyHeroBounds(isTransparent);
   return (
-    <>
+    <group scale={scale} position={[offsetX, 0, 0]}>
       {PIECES.map((piece, i) => (
         <FallingPiece key={i} piece={piece} isGlass={isGlass} />
       ))}
       <ContactShadows position={[0, -1.4, 0]} opacity={0.35} scale={14} blur={2.5} far={2} />
-    </>
+    </group>
   );
 }
 
@@ -165,23 +220,26 @@ function Scene({ isGlass }) {
  * Three.js Shape API로 정확한 조각 형태를 구현 (반원·링·삼각형·사다리꼴).
  *
  * Props:
- * @param {string|number} width   - 캔버스 너비 [Optional, 기본값: '100%']
- * @param {number}        height  - 캔버스 높이(px) [Optional, 기본값: 480]
- * @param {boolean}       isGlass - 유리 재질 모드 [Optional, 기본값: false]
- * @param {object}        sx      - 추가 MUI sx 스타일 [Optional]
+ * @param {string|number} width         - 캔버스 너비 [Optional, 기본값: '100%']
+ * @param {number}        height        - 캔버스 높이(px) [Optional, 기본값: 480]
+ * @param {boolean}       isGlass       - 유리 재질 모드 [Optional, 기본값: false]
+ * @param {boolean}       isTransparent - 배경 없는 투명 모드 (히어로 오버레이용) [Optional, 기본값: false]
+ * @param {object}        sx            - 추가 MUI sx 스타일 [Optional]
  *
  * Example usage:
  * <LogoAssembly3D height={480} isGlass />
+ * <LogoAssembly3D isTransparent sx={{ position: 'absolute', inset: 0 }} />
  */
-function LogoAssembly3D({ width = '100%', height = 480, isGlass = false, sx }) {
+function LogoAssembly3D({ width = '100%', height = 480, isGlass = false, isTransparent = false, sx }) {
   return (
     <Box sx={{ width, height, ...sx }}>
       <Canvas
         shadows
-        camera={{ position: [0, 0.6, 8], fov: 55 }}
-        gl={{ antialias: true }}
+        orthographic
+        camera={{ position: [0, 0.6, 8], zoom: 90, near: 0.1, far: 100 }}
+        gl={{ antialias: true, alpha: isTransparent }}
       >
-        <color attach="background" args={['#1c1415']} />
+        {!isTransparent && <color attach="background" args={['#1c1415']} />}
         <ambientLight intensity={0.3} />
         <directionalLight
           position={[-3, 8, 5]}
@@ -196,7 +254,7 @@ function LogoAssembly3D({ width = '100%', height = 480, isGlass = false, sx }) {
         />
         <pointLight position={[4, 3, 4]} intensity={0.9} color="#b09070" />
         <Suspense fallback={null}>
-          <Scene isGlass={isGlass} />
+          <Scene isGlass={isGlass} isTransparent={isTransparent} />
           <Environment preset="city" />
         </Suspense>
       </Canvas>

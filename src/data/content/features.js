@@ -21,9 +21,9 @@ export const features = [
     description: '강남구 중심, 지하철 도보권. 클라이언트 미팅과 채용에 유리한 주소지입니다.',
   },
   {
-    id: 'aesthetic-space',
+    id: 'all-in-one-space',
     icon: 'AutoAwesome',
-    title: '감성 공간',
-    description: '일하고 싶어지는 환경. 브랜드 이미지를 높이는 세련된 인테리어를 갖추고 있습니다.',
+    title: '일하고 싶은 공간',
+    description: '회의, 세미나, 사용자 테스트까지. 필요한 공간이 한 건물에 있습니다.',
   },
 ];

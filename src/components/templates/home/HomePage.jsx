@@ -4,7 +4,7 @@ import PartnerProgramSection from './PartnerProgramSection';
 import GallerySection from './GallerySection';
 import LocationSection from './LocationSection';
 
-const HERO_IMAGE = '/images/exterior.jpeg';
+const HERO_IMAGE = '/images/Hero_edit.png';
 
 const GALLERY_IMAGES = [
   { src: '/images/lounge-01.jpeg',       alt: '라운지 공간' },
@@ -29,7 +29,7 @@ const GALLERY_IMAGES = [
 function HomePage({ heroImage = HERO_IMAGE, galleryImages = GALLERY_IMAGES }) {
   return (
     <main>
-      <HeroSection imageSrc={heroImage} sx={{ mt: '-84px' }} />
+      <HeroSection imageSrc={heroImage} isAssemblyOnly sx={{ mt: '-84px' }} />
       <PartnerProgramSection />
       <GallerySection images={galleryImages} />
       <FeatureSection />

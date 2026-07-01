@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { heroCopy } from '../../../data';
 import LogoPhysics from '../../motion/LogoPhysics';
+import LogoAssembly3D from '../../motion/LogoAssembly3D';
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -40,7 +41,7 @@ const itemVariants = prefersReducedMotion
  * 레이어 순서 (아래 → 위):
  * 1. 배경 이미지
  * 2. 다크 그라디언트 오버레이
- * 3. LogoPhysics 투명 오버레이 (zIndex: 1)
+ * 3. 3D 오버레이 (zIndex: 1) — isAssemblyOnly 여부에 따라 LogoPhysics 또는 LogoAssembly3D(glass) 중 하나
  * 4. 텍스트 콘텐츠 (zIndex: 2)
  *
  * Props:
@@ -48,12 +49,21 @@ const itemVariants = prefersReducedMotion
  * @param {string} imageSrc - 배경 이미지 경로 [Optional]
  * @param {string} imageAlt - 이미지 alt 텍스트 [Optional, 기본값: 'Grand Soho 공간']
  * @param {boolean} is3DEnabled - 3D 캔버스 활성화 여부 [Optional, 기본값: true]
+ * @param {boolean} isAssemblyOnly - LogoPhysics 대신 LogoAssembly3D(glass) 전체 화면 오버레이 사용 (is3DEnabled 필요) [Optional, 기본값: false]
  * @param {object} sx - 추가 스타일 [Optional]
  *
  * Example usage:
  * <HeroSection imageSrc="/images/exterior.jpeg" />
+ * <HeroSection imageSrc="/images/exterior.jpeg" isAssemblyOnly />
  */
-function HeroSection({ copy = heroCopy, imageSrc, imageAlt = 'Grand Soho 공간', is3DEnabled = true, sx }) {
+function HeroSection({
+  copy = heroCopy,
+  imageSrc,
+  imageAlt = 'Grand Soho 공간',
+  is3DEnabled = true,
+  isAssemblyOnly = false,
+  sx,
+}) {
   return (
     <Box
       component="section"
@@ -94,8 +104,19 @@ function HeroSection({ copy = heroCopy, imageSrc, imageAlt = 'Grand Soho 공간'
       />
 
       {/* LogoPhysics 투명 오버레이 */}
-      {is3DEnabled && (
+      {is3DEnabled && !isAssemblyOnly && (
         <LogoPhysics
+          isTransparent
+          width="100%"
+          height="100%"
+          sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+        />
+      )}
+
+      {/* LogoAssembly3D 유리 재질 투명 오버레이 — 우측 여백에 50% 축소 배치 (씬 내부에서 스케일/오프셋 처리, 크롭 방지) */}
+      {is3DEnabled && isAssemblyOnly && (
+        <LogoAssembly3D
+          isGlass
           isTransparent
           width="100%"
           height="100%"
@@ -114,7 +135,7 @@ function HeroSection({ copy = heroCopy, imageSrc, imageAlt = 'Grand Soho 공간'
           sx={{
             px: { xs: 4, sm: 6, md: 10, lg: 14 },
             py: { xs: 12, md: 0 },
-            maxWidth: 640,
+            maxWidth: 760,
           }}
         >
           <motion.div variants={itemVariants}>
@@ -150,7 +171,6 @@ function HeroSection({ copy = heroCopy, imageSrc, imageAlt = 'Grand Soho 공간'
               sx={{
                 color: 'rgba(250,248,245,0.80)',
                 mb: 6,
-                maxWidth: 480,
                 whiteSpace: 'pre-line',
               }}
             >

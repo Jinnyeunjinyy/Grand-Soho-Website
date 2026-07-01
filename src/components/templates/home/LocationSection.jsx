@@ -8,14 +8,14 @@ import DirectionsSubwayIcon from '@mui/icons-material/DirectionsSubway';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import KakaoMap from '../../media/KakaoMap';
 import { locationInfo, contactInfo, navCta } from '../../../data';
 
 /**
  * LocationSection 컴포넌트
  *
  * 홈 페이지 위치 및 교통 안내 섹션.
- * 카카오맵 Placeholder + 주소·교통·운영시간 정보.
+ * 카카오맵(KakaoMap) + 주소·교통·운영시간 정보. API 키 미설정 시 KakaoMap 자체 placeholder로 대체.
  *
  * Props:
  * @param {object} location - 위치 데이터 [Optional, 기본값: locationInfo]
@@ -51,25 +51,13 @@ function LocationSection({ location = locationInfo, contact = contactInfo, sx })
       <Grid container spacing={{ xs: 4, md: 8 }}>
         {/* 지도 영역 */}
         <Grid size={{ xs: 12, md: 7 }}>
-          <Box
-            sx={{
-              width: '100%',
-              height: { xs: 260, md: 400 },
-              backgroundColor: 'background.paper',
-              border: '1px solid',
-              borderColor: 'divider',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              gap: 1,
-            }}
-          >
-            <LocationOnIcon sx={{ fontSize: 32, color: 'text.disabled' }} />
-            <Typography variant="body2" color="text.disabled">
-              카카오맵 준비 중
-            </Typography>
-          </Box>
+          <KakaoMap
+            lat={location.lat}
+            lng={location.lng}
+            markerLabel={location.name}
+            height={{ xs: 260, md: 400 }}
+            sx={{ border: '1px solid', borderColor: 'divider' }}
+          />
         </Grid>
 
         {/* 정보 영역 */}
