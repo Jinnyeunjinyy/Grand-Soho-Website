@@ -5,7 +5,7 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { features } from '../../../data';
-import FadeTransition from '../../motion/FadeTransition';
+import PerspectiveTransition from '../../motion/PerspectiveTransition';
 import { FeaturedIcon } from '../../../common/ui';
 
 const ICON_MAP = {
@@ -80,7 +80,7 @@ function FeatureSection({ items = features, sx }) {
         {items.map((item, idx) => {
           const IconComponent = ICON_MAP[item.icon];
           return (
-            <FadeTransition key={item.id} direction="up" delay={idx * 80} isTriggerOnView>
+            <PerspectiveTransition key={item.id} delay={idx * 80} isTriggerOnView>
               <Box
                 sx={{
                   borderRadius: '20px',
@@ -105,7 +105,7 @@ function FeatureSection({ items = features, sx }) {
                   </Typography>
                 </Box>
               </Box>
-            </FadeTransition>
+            </PerspectiveTransition>
           );
         })}
       </Box>

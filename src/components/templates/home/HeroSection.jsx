@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -123,6 +124,30 @@ function HeroSection({
           sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
         />
       )}
+
+      {/* 하단 페이드 — 다음 섹션 배경색으로 서서히 녹아들며 경계를 부드럽게 만든다.
+          균일한 간격의 stop(0/50/100%)은 눈에 계단처럼 보이므로, ease 곡선을
+          흉내 낸 5단 stop(0/35/58/78/100%)으로 초반은 느리고 끝은 촘촘하게 진해지도록 함. */}
+      <Box
+        sx={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: { xs: '30%', md: '38%' },
+          zIndex: 1,
+          pointerEvents: 'none',
+          background: (theme) => {
+            const c = theme.palette.background.default;
+            return `linear-gradient(to bottom,
+              ${alpha(c, 0)} 0%,
+              ${alpha(c, 0.1)} 35%,
+              ${alpha(c, 0.38)} 58%,
+              ${alpha(c, 0.72)} 78%,
+              ${c} 100%)`;
+          },
+        }}
+      />
 
       {/* 콘텐츠 */}
       <motion.div

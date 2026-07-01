@@ -84,19 +84,29 @@ const PIECES = [
 ];
 
 // ── 호버 인터랙션 ──────────────────────────────────────────
-// 정착 후에도 호버 트리거에 반응하도록, 값은 ref로만 관리하고
-// (리렌더 없음) 같은 스프링 물리로 목표 y를 살짝 올렸다 내린다.
-const HOVER_LIFT = 0.4;
+// 정착 후에도 호버 트리거에 반응하도록, 값은 ref로만 관리한다.
+// 위아래 이동만 — 스케일/기울기까지 섞으면 산만해 보여서 제외.
+const HOVER_LIFT = 0.5;
+
+/** 감쇠 스프링 한 스텝 — {pos, vel} ref 쌍을 target으로 수렴시킨다 */
+function springStep(posRef, velRef, target, k, c, dt) {
+  const force = -k * (posRef.current - target) - c * velRef.current;
+  velRef.current += force * dt;
+  posRef.current += velRef.current * dt;
+}
 
 // ── 스프링 낙하 컨테이너 ───────────────────────────────────
 function FallingPiece({ piece, isGlass }) {
   const { shape, svgCX, svgCY, color, delay } = piece;
   const targetX = (svgCX - SVG_CENTER_X) * SVG_SCALE;
   const targetY = -(svgCY - SVG_CENTER_Y) * SVG_SCALE;
+  const initialRotZ = useMemo(() => (Math.random() - 0.5) * 2.2, []); // 텀블링 시작 각도
 
   const groupRef = useRef();
   const posY     = useRef(targetY + FALL_OFFSET);
   const velY     = useRef(0);
+  const rotZ     = useRef(initialRotZ);
+  const velRotZ  = useRef((Math.random() - 0.5) * 4);
   const started  = useRef(false);
   const settled  = useRef(false);
   const hovered  = useRef(false);
@@ -113,19 +123,25 @@ function FallingPiece({ piece, isGlass }) {
       prevHovered.current = hovered.current;
       settled.current = false; // 호버 상태가 바뀌면 스프링을 다시 깨운다
     }
-    const target = targetY + (hovered.current ? HOVER_LIFT : 0);
+    const dt = Math.min(delta, 0.05);
+    const targetYNow = targetY + (hovered.current ? HOVER_LIFT : 0);
+
     if (started.current && !settled.current) {
-      const dt = Math.min(delta, 0.05);
-      const force = -K * (posY.current - target) - C * velY.current;
-      velY.current += force * dt;
-      posY.current += velY.current * dt;
-      if (Math.abs(posY.current - target) < 0.001 && Math.abs(velY.current) < 0.001) {
-        posY.current = target;
+      springStep(posY, velY, targetYNow, K, C, dt);
+      if (
+        Math.abs(posY.current - targetYNow) < 0.001 &&
+        Math.abs(velY.current) < 0.001
+      ) {
+        posY.current = targetYNow;
         velY.current = 0;
         settled.current = true;
       }
     }
+    // 낙하 중 텀블링 회전은 착지 시 0으로 수렴 (호버와는 무관)
+    springStep(rotZ, velRotZ, 0, ROT_K, ROT_C, dt);
+
     groupRef.current.position.y = posY.current;
+    groupRef.current.rotation.z = rotZ.current;
   });
 
   const geometry = useMemo(() => {
@@ -156,7 +172,7 @@ function FallingPiece({ piece, isGlass }) {
   };
 
   return (
-    <group ref={groupRef} position={[targetX, targetY + FALL_OFFSET, 0]}>
+    <group ref={groupRef} position={[targetX, targetY + FALL_OFFSET, 0]} rotation={[0, 0, initialRotZ]}>
       <mesh
         castShadow
         geometry={geometry}
