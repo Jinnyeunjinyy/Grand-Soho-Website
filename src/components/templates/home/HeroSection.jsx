@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -7,6 +8,8 @@ import Stack from '@mui/material/Stack';
 import { heroCopy } from '../../../data';
 import LogoPhysics from '../../motion/LogoPhysics';
 import LogoAssembly3D from '../../motion/LogoAssembly3D';
+
+const MOBILE_LOGO_SCALE = 0.6;
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -65,15 +68,18 @@ function HeroSection({
   isAssemblyOnly = false,
   sx,
 }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Box
       component="section"
       sx={{
         position: 'relative',
         overflow: 'hidden',
-        minHeight: { xs: '80vh', md: '92vh' },
+        minHeight: { xs: '112vh', md: '92vh' },
         display: 'flex',
-        alignItems: 'center',
+        alignItems: { xs: 'flex-start', md: 'center' },
         ...sx,
       }}
     >
@@ -104,24 +110,47 @@ function HeroSection({
         }}
       />
 
-      {/* LogoPhysics 투명 오버레이 */}
+      {/* LogoPhysics 투명 오버레이 — 모바일에서는 하단 밴드에만 배치, 데스크탑은 풀 오버레이 유지 */}
       {is3DEnabled && !isAssemblyOnly && (
         <LogoPhysics
           isTransparent
           width="100%"
           height="100%"
-          sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+          sx={{
+            position: 'absolute',
+            top: { xs: 'auto', md: 0 },
+            left: 0,
+            right: 0,
+            bottom: { xs: '8%', md: 0 },
+            height: { xs: '52%', md: '100%' },
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
         />
       )}
 
-      {/* LogoAssembly3D 유리 재질 투명 오버레이 — 우측 여백에 50% 축소 배치 (씬 내부에서 스케일/오프셋 처리, 크롭 방지) */}
+      {/* LogoAssembly3D 유리 재질 투명 오버레이 — 우측 여백에 50% 축소 배치 (씬 내부에서 스케일/오프셋 처리, 크롭 방지)
+          모바일에서는 하단 밴드에만 배치 + heroScale로 60% 추가 축소 + 가운데 정렬 + 바닥 그림자 숨김, 데스크탑은 풀 오버레이 유지
+          (CSS transform은 R3F 캔버스 리사이즈 측정과 충돌해 이중 축소를 일으키므로 heroScale prop으로 씬 내부에서 처리) */}
       {is3DEnabled && isAssemblyOnly && (
         <LogoAssembly3D
           isGlass
           isTransparent
           width="100%"
           height="100%"
-          sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+          heroScale={isMobile ? MOBILE_LOGO_SCALE : 1}
+          heroAlign={isMobile ? 'center' : 'right'}
+          showFloor={!isMobile}
+          sx={{
+            position: 'absolute',
+            top: { xs: 'auto', md: 0 },
+            left: 0,
+            right: 0,
+            bottom: { xs: '8%', md: 0 },
+            height: { xs: '52%', md: '100%' },
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
         />
       )}
 
@@ -159,7 +188,8 @@ function HeroSection({
         <Box
           sx={{
             px: { xs: 4, sm: 6, md: 10, lg: 14 },
-            py: { xs: 12, md: 0 },
+            pt: { xs: 12, md: 0 },
+            pb: { xs: 6, md: 0 },
             maxWidth: 760,
           }}
         >

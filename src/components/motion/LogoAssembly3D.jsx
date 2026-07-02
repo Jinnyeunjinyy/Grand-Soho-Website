@@ -212,24 +212,28 @@ const HERO_SCALE = 0.66;
 const HERO_OFFSET_TARGET = 3.2;
 const HERO_EDGE_MARGIN = 0.4;
 
-function useAssemblyHeroBounds(isTransparent) {
+function useAssemblyHeroBounds(isTransparent, heroScale, heroAlign) {
   const { viewport } = useThree();
   if (!isTransparent) return { scale: 1, offsetX: 0 };
-  const scaledHalfWidth = LOGO_HALF_WIDTH * HERO_SCALE;
+  const effectiveScale = HERO_SCALE * heroScale;
+  if (heroAlign === 'center') return { scale: effectiveScale, offsetX: 0 };
+  const scaledHalfWidth = LOGO_HALF_WIDTH * effectiveScale;
   const visibleHalf = viewport.width / 2;
   const maxOffset = Math.max(0, visibleHalf - scaledHalfWidth - HERO_EDGE_MARGIN);
   const offsetX = Math.min(HERO_OFFSET_TARGET, maxOffset);
-  return { scale: HERO_SCALE, offsetX };
+  return { scale: effectiveScale, offsetX };
 }
 
-function Scene({ isGlass, isTransparent }) {
-  const { scale, offsetX } = useAssemblyHeroBounds(isTransparent);
+function Scene({ isGlass, isTransparent, heroScale, heroAlign, showFloor }) {
+  const { scale, offsetX } = useAssemblyHeroBounds(isTransparent, heroScale, heroAlign);
   return (
     <group scale={scale} position={[offsetX, 0, 0]}>
       {PIECES.map((piece, i) => (
         <FallingPiece key={i} piece={piece} isGlass={isGlass} />
       ))}
-      <ContactShadows position={[0, -1.4, 0]} opacity={0.35} scale={14} blur={2.5} far={2} />
+      {showFloor && (
+        <ContactShadows position={[0, -1.4, 0]} opacity={0.35} scale={14} blur={2.5} far={2} />
+      )}
     </group>
   );
 }
@@ -245,13 +249,26 @@ function Scene({ isGlass, isTransparent }) {
  * @param {number}        height        - 캔버스 높이(px) [Optional, 기본값: 480]
  * @param {boolean}       isGlass       - 유리 재질 모드 [Optional, 기본값: false]
  * @param {boolean}       isTransparent - 배경 없는 투명 모드 (히어로 오버레이용) [Optional, 기본값: false]
+ * @param {number}        heroScale     - 히어로 투명 모드에서 로고 크기 배율 (1 = 기본 66% 축소 배치, 0.6이면 그보다 60%로 추가 축소) [Optional, 기본값: 1]
+ * @param {string}        heroAlign     - 히어로 투명 모드에서 가로 배치 위치. 'right'는 우측 여백 오프셋, 'center'는 화면 중앙 고정 [Optional, 기본값: 'right']
+ * @param {boolean}       showFloor     - ContactShadows 바닥 그림자 표시 여부 [Optional, 기본값: true]
  * @param {object}        sx            - 추가 MUI sx 스타일 [Optional]
  *
  * Example usage:
  * <LogoAssembly3D height={480} isGlass />
  * <LogoAssembly3D isTransparent sx={{ position: 'absolute', inset: 0 }} />
+ * <LogoAssembly3D isTransparent heroScale={0.6} heroAlign="center" showFloor={false} sx={{ position: 'absolute', inset: 0 }} />
  */
-function LogoAssembly3D({ width = '100%', height = 480, isGlass = false, isTransparent = false, sx }) {
+function LogoAssembly3D({
+  width = '100%',
+  height = 480,
+  isGlass = false,
+  isTransparent = false,
+  heroScale = 1,
+  heroAlign = 'right',
+  showFloor = true,
+  sx,
+}) {
   return (
     <Box sx={{ width, height, ...sx }}>
       <Canvas
@@ -275,7 +292,13 @@ function LogoAssembly3D({ width = '100%', height = 480, isGlass = false, isTrans
         />
         <pointLight position={[4, 3, 4]} intensity={0.9} color="#b09070" />
         <Suspense fallback={null}>
-          <Scene isGlass={isGlass} isTransparent={isTransparent} />
+          <Scene
+            isGlass={isGlass}
+            isTransparent={isTransparent}
+            heroScale={heroScale}
+            heroAlign={heroAlign}
+            showFloor={showFloor}
+          />
           <Environment preset="city" />
         </Suspense>
       </Canvas>

@@ -11,9 +11,12 @@ export default {
     layout: 'fullscreen',
   },
   argTypes: {
-    width:   { control: 'text',                                    description: '캔버스 너비' },
-    height:  { control: { type: 'number', min: 300, max: 800 },  description: '캔버스 높이(px)' },
-    isGlass: { control: 'boolean',                                 description: '유리 재질 모드' },
+    width:      { control: 'text',                                    description: '캔버스 너비' },
+    height:     { control: { type: 'number', min: 300, max: 800 },  description: '캔버스 높이(px)' },
+    isGlass:    { control: 'boolean',                                 description: '유리 재질 모드' },
+    heroScale:  { control: { type: 'number', min: 0.2, max: 1, step: 0.1 }, description: '히어로 투명 모드(isTransparent)에서 로고 크기 추가 배율' },
+    heroAlign:  { control: { type: 'radio' }, options: ['right', 'center'], description: '히어로 투명 모드(isTransparent)에서 가로 배치 위치' },
+    showFloor:  { control: 'boolean',                                 description: 'ContactShadows 바닥 그림자 표시 여부' },
   },
 };
 
