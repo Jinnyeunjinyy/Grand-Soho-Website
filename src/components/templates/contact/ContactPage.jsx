@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import emailjs from '@emailjs/browser';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -15,7 +14,7 @@ import Divider from '@mui/material/Divider';
 import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import { inquiryTypes, contactInfo, emailjsConfig } from '../../../data';
+import { inquiryTypes, contactInfo } from '../../../data';
 
 const INITIAL_FORM = {
   name: '',
@@ -28,7 +27,8 @@ const INITIAL_FORM = {
  * ContactPage 컴포넌트
  *
  * /contact 페이지. 입주 상담 / 회의실 / 기타 문의 폼.
- * 제출 시 EmailJS로 contactInfo.operatorEmail(ehong@gvc.im)에 메일 전송.
+ * TODO: EmailJS 계정 발급 전까지 mailto 링크로 임시 대체 — 발급 후 emailjs.send()로 복원.
+ * 제출 시 mailto 링크를 열어 사용자의 메일 클라이언트로 contactInfo.operatorEmail(ehong@gvc.im)에 전송.
  *
  * Props:
  * @param {object} sx - 추가 스타일 [Optional]
@@ -48,26 +48,18 @@ function ContactPage({ sx }) {
 
   const isValid = form.name.trim() && form.phone.trim() && form.inquiryType && form.message.trim();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!isValid) return;
 
     setIsLoading(true);
     try {
       const inquiryLabel = inquiryTypes.find((t) => t.value === form.inquiryType)?.label ?? form.inquiryType;
+      const subject = `[그랜드소호 문의] ${inquiryLabel}`;
+      const body = `이름: ${form.name}\n연락처: ${form.phone}\n문의 유형: ${inquiryLabel}\n\n${form.message}`;
+      const mailtoUrl = `mailto:${contactInfo.operatorEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-      await emailjs.send(
-        emailjsConfig.serviceId,
-        emailjsConfig.templateId,
-        {
-          to_email: contactInfo.operatorEmail,
-          from_name: form.name,
-          from_phone: form.phone,
-          inquiry_type: inquiryLabel,
-          message: form.message,
-        },
-        emailjsConfig.publicKey,
-      );
+      window.location.href = mailtoUrl;
 
       setStatus('success');
       setForm(INITIAL_FORM);
@@ -156,7 +148,7 @@ function ContactPage({ sx }) {
 
                 {status === 'success' && (
                   <Alert severity="success">
-                    문의가 접수되었습니다. 영업일 기준 1~2일 내로 답변드립니다.
+                    메일 작성 화면이 열렸습니다. 내용을 확인하고 전송해 주세요.
                   </Alert>
                 )}
                 {status === 'error' && (
