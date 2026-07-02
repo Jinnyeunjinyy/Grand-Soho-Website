@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CategoryTab } from '../../in-page-navigation/CategoryTab';
+import { CardContainer } from '../../card/CardContainer';
 import { notices, noticeCategories } from '../../../data';
 
 const CATEGORY_LABEL = {
@@ -43,7 +44,6 @@ function NoticePage({ onNoticeClick, sx }) {
 
   const pinned = filtered.filter((n) => n.isPinned);
   const regular = filtered.filter((n) => !n.isPinned);
-  const sorted = [...pinned, ...regular];
 
   return (
     <Box sx={{ ...sx }}>
@@ -75,97 +75,175 @@ function NoticePage({ onNoticeClick, sx }) {
           sx={{ mb: 2 }}
         />
 
-        {sorted.length === 0 ? (
+        {pinned.length === 0 && regular.length === 0 ? (
           <Box sx={{ py: 12, textAlign: 'center' }}>
             <Typography variant="body2" color="text.disabled">
               등록된 공지사항이 없습니다.
             </Typography>
           </Box>
         ) : (
-          <Stack divider={<Box sx={{ borderBottom: '1px solid', borderColor: 'divider' }} />}>
-            {sorted.map((notice) => (
-              <Box
-                key={notice.id}
-                component="button"
-                onClick={() => onNoticeClick?.(notice)}
-                sx={{
-                  width: '100%',
-                  border: 'none',
-                  background: 'transparent',
-                  backgroundColor: notice.isPinned ? 'background.subtle' : 'transparent',
-                  textAlign: 'left',
-                  cursor: onNoticeClick ? 'pointer' : 'default',
-                  display: 'flex',
-                  alignItems: { sm: 'center' },
-                  justifyContent: 'space-between',
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 1.5,
-                  py: 3,
-                  px: 0,
-                  transition: 'background-color 150ms',
-                  '&:hover': onNoticeClick ? { backgroundColor: 'action.hover' } : {},
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flex: 1, minWidth: 0 }}>
-                  {notice.isPinned && (
-                    <PushPinIcon
-                      sx={{ fontSize: 16, color: 'primary.main', mt: '3px', flexShrink: 0 }}
-                    />
-                  )}
-                  <Box sx={{ minWidth: 0 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
-                      <Chip
-                        label={CATEGORY_LABEL[notice.category] ?? notice.category}
-                        size="small"
-                        color={CATEGORY_COLOR[notice.category] ?? 'default'}
-                        sx={{ fontSize: '0.6875rem', height: 20 }}
+          <>
+            {pinned.length > 0 && (
+              <Stack spacing={1.5} sx={{ mb: regular.length > 0 ? 3 : 0 }}>
+                {pinned.map((notice) => (
+                  <CardContainer
+                    key={notice.id}
+                    variant="elevation"
+                    radius="md"
+                    isInteractive={!!onNoticeClick}
+                    onClick={() => onNoticeClick?.(notice)}
+                    sx={{
+                      textAlign: 'left',
+                      cursor: onNoticeClick ? 'pointer' : 'default',
+                      display: 'flex',
+                      alignItems: { sm: 'center' },
+                      justifyContent: 'space-between',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 1.5,
+                      p: { xs: 2.5, sm: 3 },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flex: 1, minWidth: 0 }}>
+                      <PushPinIcon
+                        sx={{ fontSize: 16, color: 'primary.main', mt: '3px', flexShrink: 0 }}
                       />
+                      <Box sx={{ minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
+                          <Chip
+                            label={CATEGORY_LABEL[notice.category] ?? notice.category}
+                            size="small"
+                            color={CATEGORY_COLOR[notice.category] ?? 'default'}
+                            sx={{ fontSize: '0.6875rem', height: 20 }}
+                          />
+                        </Box>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 700,
+                            mb: 0.5,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {notice.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {notice.summary}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: notice.isPinned ? 700 : 500,
-                        mb: 0.5,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {notice.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {notice.summary}
-                    </Typography>
-                  </Box>
-                </Box>
 
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    flexShrink: 0,
-                    pl: { xs: notice.isPinned ? 4 : 0, sm: 2 },
-                  }}
-                >
-                  <Typography variant="caption" color="text.secondary">
-                    {notice.date}
-                  </Typography>
-                  {onNoticeClick && (
-                    <ChevronRightIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-                  )}
-                </Box>
-              </Box>
-            ))}
-          </Stack>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        flexShrink: 0,
+                        pl: { xs: 4, sm: 2 },
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        {notice.date}
+                      </Typography>
+                      {onNoticeClick && (
+                        <ChevronRightIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
+                      )}
+                    </Box>
+                  </CardContainer>
+                ))}
+              </Stack>
+            )}
+
+            {regular.length > 0 && (
+              <Stack divider={<Box sx={{ borderBottom: '1px solid', borderColor: 'divider' }} />}>
+                {regular.map((notice) => (
+                  <Box
+                    key={notice.id}
+                    component="button"
+                    onClick={() => onNoticeClick?.(notice)}
+                    sx={{
+                      width: '100%',
+                      border: 'none',
+                      background: 'transparent',
+                      textAlign: 'left',
+                      cursor: onNoticeClick ? 'pointer' : 'default',
+                      display: 'flex',
+                      alignItems: { sm: 'center' },
+                      justifyContent: 'space-between',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 1.5,
+                      py: 3,
+                      px: 0,
+                      transition: 'background-color 150ms',
+                      '&:hover': onNoticeClick ? { backgroundColor: 'action.hover' } : {},
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flex: 1, minWidth: 0 }}>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
+                          <Chip
+                            label={CATEGORY_LABEL[notice.category] ?? notice.category}
+                            size="small"
+                            color={CATEGORY_COLOR[notice.category] ?? 'default'}
+                            sx={{ fontSize: '0.6875rem', height: 20 }}
+                          />
+                        </Box>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 500,
+                            mb: 0.5,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {notice.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {notice.summary}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        flexShrink: 0,
+                        pl: { xs: 0, sm: 2 },
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        {notice.date}
+                      </Typography>
+                      {onNoticeClick && (
+                        <ChevronRightIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
+                      )}
+                    </Box>
+                  </Box>
+                ))}
+              </Stack>
+            )}
+          </>
         )}
       </Box>
     </Box>
